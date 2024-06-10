@@ -79,6 +79,7 @@ flutter:
   assets:
     - images/logo.png
     - .env
+    - images/default_profile.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
