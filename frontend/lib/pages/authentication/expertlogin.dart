@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/expertSide/expertHome.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExpertLogin extends StatefulWidget {
-  ExpertLogin({super.key});
+  const ExpertLogin({super.key});
 
   @override
   State<ExpertLogin> createState() => _ExpertLoginState();
@@ -93,12 +94,10 @@ class _ExpertLoginState extends State<ExpertLogin> {
                 ),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+              SizedBox(
                 child: Text(
                   'Welcome!',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -118,7 +117,9 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -150,7 +151,9 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   obscureText: passwordVisibleOne,
                   decoration: InputDecoration(
                     labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -200,19 +203,15 @@ class _ExpertLoginState extends State<ExpertLogin> {
                         login();
                       }
                     },
-                    child: const Text(
+                    child:  Text(
                       'Login',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
-                      ),
+                      style: TTtextStyles.subheadlineBold.copyWith(
+                        color: AppColors.white,
                     ),
                   ),
                 ),
               ),
-              
+              ),
             ],
           ),
         ),
