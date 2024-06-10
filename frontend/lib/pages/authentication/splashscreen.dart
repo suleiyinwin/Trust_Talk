@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/usertype.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -36,13 +37,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   onPressed: () {
-                     Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const UserType()),
-              (Route<dynamic> route) => false,
-            );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const UserType()),
+                      (Route<dynamic> route) => false,
+                    );
                   },
-                  child:const Text('Get Started',style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 18, wordSpacing: 2),),
+                  child: Text('Get Started', style: TTtextStyles.bodylargeBold.copyWith(color: AppColors.primaryColor)),
                 ),
               ),
             ],

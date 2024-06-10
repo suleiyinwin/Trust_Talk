@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/userside/home.dart';
@@ -95,12 +96,10 @@ class _LoginState extends State<Login> {
                 ),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+              SizedBox(
                 child: Text(
                   'Welcome!',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                 style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -120,7 +119,9 @@ class _LoginState extends State<Login> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -152,7 +153,9 @@ class _LoginState extends State<Login> {
                   obscureText: passwordVisibleOne,
                   decoration: InputDecoration(
                     labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -202,15 +205,12 @@ class _LoginState extends State<Login> {
                         login();
                       }
                     },
-                    child: const Text(
+                    child:  Text(
                       'Login',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
-                      ),
+                      style: TTtextStyles.subheadlineBold.copyWith(
+                        color: AppColors.white,
                     ),
+                  ),
                   ),
                 ),
               ),
@@ -218,11 +218,10 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                   Text(
                     'Don\'t you have an account?',
-                    style: TextStyle(
-                      color: AppColors.textColor,
-                    ),
+                     style: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
@@ -231,12 +230,11 @@ class _LoginState extends State<Login> {
                         MaterialPageRoute(builder: (context) => const Signup()),
                       );
                     },
-                    child: const Text(
+                    child:  Text(
                       'Register now',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        decorationColor: AppColors.primaryColor,
                       ),
                     ),
                   ),
