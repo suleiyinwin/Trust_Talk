@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/login.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -93,12 +94,10 @@ class _SignupState extends State<Signup> {
                 ),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+              SizedBox(
                 child: Text(
                   'Join Us',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -120,7 +119,9 @@ class _SignupState extends State<Signup> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Username',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -155,7 +156,9 @@ class _SignupState extends State<Signup> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -189,7 +192,9 @@ class _SignupState extends State<Signup> {
                   obscureText: passwordVisibleOne,
                   decoration: InputDecoration(
                     labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -236,7 +241,9 @@ class _SignupState extends State<Signup> {
                   obscureText: passwordVisibleTwo,
                   decoration: InputDecoration(
                     labelText: '   Confirm Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -286,14 +293,11 @@ class _SignupState extends State<Signup> {
                         signUp();
                       }
                     },
-                    child: const Text(
+                    child:  Text(
                       'Register',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
-                      ),
+                     style: TTtextStyles.subheadlineBold.copyWith(
+                        color: AppColors.white,
+                    ),
                     ),
                   ),
                 ),
@@ -302,25 +306,23 @@ class _SignupState extends State<Signup> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                   Text(
                     'Already have an account?',
-                    style: TextStyle(
-                      color: AppColors.textColor,
-                    ),
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => Login()),
+                        MaterialPageRoute(builder: (context) => const Login()),
                       );
                     },
-                    child: const Text(
+                    child:  Text(
                       'Login',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        decorationColor: AppColors.primaryColor,
                       ),
                     ),
                   ),

@@ -79,6 +79,13 @@ flutter:
   assets:
     - images/logo.png
     - .env
+    - fonts/
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: fonts/Inter-Medium.ttf
+
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
