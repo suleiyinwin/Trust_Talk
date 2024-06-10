@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 
 
 class userDetail extends StatefulWidget {
@@ -151,16 +152,17 @@ class ProfileInfo extends StatelessWidget {
       children: [
         Text(
           username,
-          style: const TextStyle(
+          style: TTtextStyles.bodymediumBold.copyWith(
             fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: AppColors.textColor,
-          ),
+            color: AppColors.textColor
+          )
         ),
         const SizedBox(height: 8,),
-        const Text(
+         Text(
           'Edit Profile',
-          style: TextStyle(color: AppColors.textColor),
+          style: TTtextStyles.bodysmallRegular.copyWith(
+            color: AppColors.textColor,
+          )
         )
       ],
     );
@@ -239,7 +241,9 @@ class SettingsRow extends StatelessWidget {
       children: [
         Text(
           text,
-          style: const TextStyle(color: AppColors.textColor),
+          style: TTtextStyles.bodymediumRegular.copyWith(
+            color: AppColors.textColor,
+          ),
         ),
         Expanded(
           child: Row(
@@ -256,6 +260,7 @@ class SettingsRow extends StatelessWidget {
     );
   }
 }
+
 void navigateToChangePassword() {
   // Navigation logic here
 }
