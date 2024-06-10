@@ -17,6 +17,7 @@ const signup = async (req, res) => {
           userId: userRecord.uid,
           username,
           email,
+          profileurl: '',
         });
         await user.save();
     
