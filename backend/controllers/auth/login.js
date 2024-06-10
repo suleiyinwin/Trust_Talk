@@ -14,9 +14,6 @@ const login = async (req, res) => {
         if (!user) {
             return res.status(400).json({ error: 'User not found' });
         }
-        if(user.type !== 'user') {
-            return res.status(400).json({ error: 'User not authorized' });
-        }
 
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         // console.log('User logged in:', userCredential.user);

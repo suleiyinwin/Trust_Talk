@@ -1,8 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import admin from 'firebase-admin';
-import User from '../../dbModels/user.js';
 import firebaseClientConfig from '../../database/firebaseClientConfig.js';
+import Expert from '../../dbModels/expert.js';
 
 const expertlogin = async (req, res) => {
     try {
@@ -10,12 +10,9 @@ const expertlogin = async (req, res) => {
         const app = initializeApp(firebaseClientConfig);
         const auth = getAuth(app);
 
-        const user = await User.findOne({ email });
-        if (!user) {
+        const expert = await Expert.findOne({ email });
+        if (!expert) {
             return res.status(400).json({ error: 'User not found' });
-        }
-        if(user.type !== 'healthExpert') {
-            return res.status(400).json({ error: 'User not authorized' });
         }
 
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
