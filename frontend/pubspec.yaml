@@ -80,6 +80,7 @@ flutter:
     - images/logo.png
     - .env
     - fonts/
+    - images/default_profile.png
   fonts:
     - family: Inter
       fonts:
