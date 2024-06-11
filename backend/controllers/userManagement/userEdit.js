@@ -2,12 +2,13 @@ import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import admin from 'firebase-admin';
 import User from '../../dbModels/user.js';
+import { bucket } from '../../database/firebaseConfig.js';
 
 // multer for file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-const bucket = admin.storage().bucket();
+
 
 // Update user profile
 const updateProfile = (req, res) => {
