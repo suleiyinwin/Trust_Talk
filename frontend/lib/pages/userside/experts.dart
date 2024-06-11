@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/userside/experts_card.dart';
 
 class ExpertsPage extends StatelessWidget {
   const ExpertsPage({super.key});
@@ -42,40 +42,6 @@ class ExpertsPage extends StatelessWidget {
   }
 }
 
-//Card for each expert
-class ExpertsCard extends StatefulWidget {
-  const ExpertsCard({super.key});
-
-  @override
-  State<ExpertsCard> createState() => _ExpertsCardState();
-}
-
-class _ExpertsCardState extends State<ExpertsCard> {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10.0, top: 8.0, right: 10.0),
-      child: SizedBox(
-        child: Card(
-          color: AppColors.secondaryBackgroundColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          child: const ListTile(
-            contentPadding: EdgeInsets.all(16.0),
-            leading: CircleAvatar(
-              radius: 30,
-              backgroundImage: AssetImage('images/logo.png'),
-            ),
-            title: Text('Dr. John Doe'),
-            subtitle: Text('Cardiologist'),
-            trailing: Icon(CupertinoIcons.chat_bubble_2_fill, color: AppColors.primaryColor),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 //List of all experts
 class AllExperts extends StatefulWidget {
