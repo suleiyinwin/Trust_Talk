@@ -10,6 +10,7 @@ import authRouter from './routers/authRouter.js';
 import chatRouter from './routers/chatRouter.js';
 import eduRouter from './routers/eduRouter.js';
 import mapRouter from './routers/mapRouter.js';
+import userRouter from './routers/userRouter.js';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ app.use('/auth', authRouter);
 app.use('/chat', chatRouter);
 app.use('/edu', eduRouter);
 app.use('/map', mapRouter);
+app.use('/user', userRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

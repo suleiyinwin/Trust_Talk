@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/userside/edit_profile.dart';
 
 
 class userDetail extends StatefulWidget {
@@ -175,14 +176,14 @@ class EditProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.chevron_right),
+      icon: const Icon(Icons.chevron_right_rounded),
       onPressed: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const EditProfile(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const EditProfile(),
+          ),
+        );
       },
     );
   }
@@ -250,7 +251,7 @@ class SettingsRow extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               IconButton(
-                icon: const Icon(Icons.chevron_right),
+                icon: const Icon(Icons.chevron_right_rounded),
                 onPressed: onTap,
               ),
             ],
