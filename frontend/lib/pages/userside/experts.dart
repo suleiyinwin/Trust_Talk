@@ -84,7 +84,7 @@ class _AllExpertsState extends State<AllExperts> {
   }
 
   Future<List<Expert>> fetchExperts() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/chat/expertlist'));
+    final response = await http.get(Uri.parse('$backendUrl/chat/expertlist'));
 
     if (response.statusCode == 200) {
       List jsonResponse = json.decode(response.body);
