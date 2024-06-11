@@ -1,9 +1,15 @@
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/userside/edit_profile.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 class userDetail extends StatefulWidget {
@@ -14,8 +20,41 @@ class userDetail extends StatefulWidget {
 }
 
 class _userDetailState extends State<userDetail> {
-  final String _profilePhotoUrl = '';
- final String _username = 'Username';
+ String _profilePhotoUrl = '';
+ String _username = 'Username';
+ final String? backendUrl = dotenv.env['BACKEND_URL'];
+
+ @override
+ void initState(){
+  super.initState();
+  _loadUserProfile();
+ }
+ Future<void> _loadUserProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idToken = prefs.getString('token');
+  
+    try {
+      final response = await http.get(
+        Uri.parse('$backendUrl/user/getUserProfile'),
+        headers: {
+          'Authorization': 'Bearer $idToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final userProfile = jsonDecode(response.body);
+        setState(() {
+          _username = userProfile['username'] ?? 'Username';
+          _profilePhotoUrl = userProfile['profileUrl'] ?? '';
+          
+        });
+      } else {
+        print('Failed to load user profile: ${response.body}');
+      }
+    } catch (e) {
+      print('Error loading user profile: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

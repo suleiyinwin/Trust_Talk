@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/signup.dart';
@@ -55,7 +56,7 @@ class _LoginState extends State<Login> {
           // Check if the widget is still mounted
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const Home()),
+            MaterialPageRoute(builder: (context) => const BottomNav()),
           );
         }
       } else {
