@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 
 class ExpertsPage extends StatelessWidget {
   const ExpertsPage({super.key});
@@ -14,23 +15,14 @@ class ExpertsPage extends StatelessWidget {
           shape: const Border(
             bottom: BorderSide(color: AppColors.backgroundGrey, width: 1.0)),
           backgroundColor: AppColors.backgroundColor,
-          title: const Text('Health Experts', 
-            style: TextStyle(
-              fontSize: 20,
-              fontFamily: 'Inter',
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0.36,
-            ),
-          ),
-          bottom: const TabBar(
+          title: const Text('Health Experts', style: TTtextStyles.subtitleBold),
+          bottom: TabBar(
             indicatorColor: AppColors.primaryColor,
             indicatorSize: TabBarIndicatorSize.tab,
-            labelStyle: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              color: AppColors.primaryColor
+            labelStyle: TTtextStyles.subheadlineRegular.copyWith(
+              color: AppColors.primaryColor,
             ),
-            tabs: <Widget>[
+            tabs: const <Widget>[
               Tab(text: 'All'),
               Tab(text: 'Active'),
               Tab(text: 'Inactive'),
@@ -73,7 +65,7 @@ class _ExpertsCardState extends State<ExpertsCard> {
             contentPadding: EdgeInsets.all(16.0),
             leading: CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage('assets/images/doctor.png'),
+              backgroundImage: AssetImage('images/logo.png'),
             ),
             title: Text('Dr. John Doe'),
             subtitle: Text('Cardiologist'),
