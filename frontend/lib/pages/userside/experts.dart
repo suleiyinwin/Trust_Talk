@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -42,7 +45,26 @@ class ExpertsPage extends StatelessWidget {
   }
 }
 
+//Expert class
+class Expert {
+  final String name;
+  final String specialty;
+  final String profileUrl;
 
+  Expert({
+    required this.name,
+    required this.specialty,
+    required this.profileUrl,
+  });
+
+  factory Expert.fromJson(Map<String, dynamic> json) {
+    return Expert(
+      name: json['name'],
+      specialty: json['specility'],
+      profileUrl: json['profileurl'],
+    );
+  }
+}
 //List of all experts
 class AllExperts extends StatefulWidget {
   const AllExperts({super.key});
@@ -52,13 +74,50 @@ class AllExperts extends StatefulWidget {
 }
 
 class _AllExpertsState extends State<AllExperts> {
+  late Future<List<Expert>> _expertsFuture;
+  final String? backendUrl = dotenv.env['BACKEND_URL'];
+
+  @override
+  void initState() {
+    super.initState();
+    _expertsFuture = fetchExperts();
+  }
+
+  Future<List<Expert>> fetchExperts() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/chat/expertlist'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((expert) => Expert.fromJson(expert)).toList();
+    } else {
+      throw Exception('Failed to load experts');
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: 10,
-        itemBuilder: (BuildContext context, int index) {
-          return const ExpertsCard();
+      body: FutureBuilder<List<Expert>>(
+        future: _expertsFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No experts found'));
+          } else {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ExpertsCard(
+                  name: snapshot.data![index].name,
+                  specialty: snapshot.data![index].specialty,
+                  profileUrl: snapshot.data![index].profileUrl,
+                );
+              },
+            );
+          }
         },
       ),
     );
