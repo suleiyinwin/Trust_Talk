@@ -1,10 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/userside/user_detail.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -18,12 +22,31 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   String _profilePhotoUrl = '';
+  final String? backendUrl = dotenv.env['BACKEND_URL'];
 
-  @override
+ @override
   void initState() {
     super.initState();
     _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
+    _usernameController.text = FirebaseAuth.instance.currentUser?.displayName ?? '';
   }
+
+  Future<void> _selectAndUploadProfilePhoto() async{
+  final picker = ImagePicker();
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  if (pickedFile !=null){
+    
+    setState((){
+      _profileImageBytes = File(pickedFile.path).readAsBytesSync();
+    });
+
+    //backend upload
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse ('http://$backendUrl/user/updateProfile')
+    );
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -249,6 +272,3 @@ class TextFieldWithTitle extends StatelessWidget {
   }
 }
 
-void _selectAndUploadProfilePhoto() async {
-  // Your code for selecting and uploading profile photo
-}

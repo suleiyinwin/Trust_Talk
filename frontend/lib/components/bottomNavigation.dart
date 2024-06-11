@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/pages/userside/home.dart';
+import 'package:frontend/pages/userside/user_detail.dart';
 
 class BottomNav extends StatefulWidget {
   const BottomNav({super.key});
@@ -72,7 +73,7 @@ class _BottomNavState extends State<BottomNav> {
             // ExpertsPage(),
             Home(),
             // TestCentersPage(),
-            // ProfilePage(),
+            userDetail(),
           ],
         ),
       ),
