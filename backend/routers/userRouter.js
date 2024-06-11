@@ -1,8 +1,12 @@
-import { Router } from "express";
-import {updateProfile, getUserProfile, upload} from '../controllers/userManagement/userEdit.js'
+import { Router } from 'express';
+import { updateUserProfile, getUserProfile } from '../controllers/userManagement/userEdit.js';
 
 const userRouter = Router();
-userRouter.post('/updateProfile', upload.single('profileImage'), updateProfile);
-userRouter.get('/user/:userId', getUserProfile);
+
+// Route to update user profile
+userRouter.post('/updateProfile', updateUserProfile);
+
+// Route to view user profile
+userRouter.get('/getUserProfile', getUserProfile);
 
 export default userRouter;
