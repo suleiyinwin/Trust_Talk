@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/expertlogin.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 
@@ -31,7 +32,7 @@ class UserType extends StatelessWidget {
               (Route<dynamic> route) => false,
             );
                   },
-                  child:const Text('User',style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 18, wordSpacing: 2),),
+                  child:Text('User',style: TTtextStyles.bodylargeBold.copyWith(color: AppColors.primaryColor),),
                 ),
             ),
             const SizedBox(height: 30),
@@ -46,13 +47,13 @@ class UserType extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                     Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => ExpertLogin()),
-              (Route<dynamic> route) => false,
-            );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => ExpertLogin()),
+                      (Route<dynamic> route) => false,
+                    );
                   },
-                  child:const Text('Health Expert',style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 18, wordSpacing: 2),),
+                  child: Text('Health Expert',style: TTtextStyles.bodylargeBold.copyWith(color: AppColors.primaryColor),),
                 ),
             ),
           ],
