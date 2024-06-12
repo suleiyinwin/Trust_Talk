@@ -22,7 +22,7 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   String _profilePhotoUrl = '';
-  String _usernameError='';
+  String _usernameError = '';
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
   @override
@@ -31,48 +31,54 @@ class _EditProfileState extends State<EditProfile> {
     _loadUserProfile();
   }
 
- Future<void> _loadUserProfile() async {
-  final prefs = await SharedPreferences.getInstance();
-  final idToken = prefs.getString('token');
+  Future<void> _loadUserProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idToken = prefs.getString('token');
 
-  try {
-    final response = await http.get(
-      Uri.parse('$backendUrl/user/getUserProfile'),
-      headers: {
-        'Authorization': 'Bearer $idToken',
-      },
-    );
+    try {
+      final response = await http.get(
+        Uri.parse('$backendUrl/user/getUserProfile'),
+        headers: {
+          'Authorization': 'Bearer $idToken',
+        },
+      );
 
-
-    if (response.statusCode == 200) {
-      final userProfile = jsonDecode(response.body);
-      setState(() {
-        _emailController.text = userProfile['email'] ?? '';
-        _usernameController.text = userProfile['username'] ?? '';
-        _profilePhotoUrl = userProfile['profileUrl'] ?? '';
-      });
+      if (response.statusCode == 200) {
+        final userProfile = jsonDecode(response.body);
+        setState(() {
+          _emailController.text = userProfile['email'] ?? '';
+          _usernameController.text = userProfile['username'] ?? '';
+          _profilePhotoUrl = userProfile['profileUrl'] ?? '';
+        });
+      }
+    } catch (e) {
+      print('Error loading user profile: $e');
     }
-  } catch (e) {
-    print('Error loading user profile: $e');
   }
-}
 
+  Future<void> _selectAndUploadProfilePhoto() async {
+    final picker = ImagePicker(); // Create an instance of ImagePicker
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  void _selectAndUploadProfilePhoto() async {
-  final picker = ImagePicker(); // Create an instance of ImagePicker
-  final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Pick an image from the gallery
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      setState(() {
+        _profileImageBytes = bytes;
+      });
+    // final pickedFile = await picker.pickImage(
+    //     source: ImageSource.gallery); // Pick an image from the gallery
 
-  if (pickedFile != null) {
-    final bytes = await pickedFile.readAsBytes(); // Read the selected image as bytes
-    setState(() {
-      _profileImageBytes = bytes; // Set the profile image bytes to display the preview
-    });
-    // await _uploadProfilePhoto(bytes); // Upload the image
+    // if (pickedFile != null) {
+    //   final bytes =
+    //       await pickedFile.readAsBytes(); // Read the selected image as bytes
+    //   setState(() {
+    //     _profileImageBytes =
+    //         bytes; // Set the profile image bytes to display the preview
+    //   });
+      // await _uploadProfilePhoto(bytes); // Upload the image
+    //}
   }
-}
-
-
-  
+  }
 
   Future<void> _updateProfile() async {
     try {
@@ -115,7 +121,8 @@ class _EditProfileState extends State<EditProfile> {
         );
       } else {
         final responseData = jsonDecode(responseBody);
-        if (response.statusCode == 400 && responseData['message'] == 'Username already exists') {
+        if (response.statusCode == 400 &&
+            responseData['message'] == 'Username already exists') {
           setState(() {
             _usernameError = 'Username already exists. Try again.';
           });
@@ -306,7 +313,7 @@ class TextFieldWithTitle extends StatelessWidget {
     required this.title,
     required this.controller,
     this.enabled = true,
-    this.errorText='',
+    this.errorText = '',
   }) : super(key: key);
 
   @override
@@ -336,7 +343,7 @@ class TextFieldWithTitle extends StatelessWidget {
               ),
               fillColor: AppColors.backgroundGrey,
               filled: true,
-               errorText: errorText.isEmpty ? null : errorText,
+              errorText: errorText.isEmpty ? null : errorText,
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.red),
