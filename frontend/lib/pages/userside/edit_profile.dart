@@ -91,7 +91,6 @@ class _EditProfileState extends State<EditProfile> {
           _profileImageBytes!,
           filename: 'profile.jpg',
         ));
-                print("Profile photo added to request");
 
       }
 
@@ -104,7 +103,6 @@ class _EditProfileState extends State<EditProfile> {
         if (responseData['user'] != null && responseData['user']['profileurl'] != null) {
           final newProfilePhotoUrl = responseData['user']['profileurl'];
           await prefs.setString('profilePhotoUrl', newProfilePhotoUrl);
-          print("New profile photo URL: $newProfilePhotoUrl");
         }
         Navigator.pushReplacement(
           context,

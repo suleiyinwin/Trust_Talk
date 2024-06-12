@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/login.dart';
+import 'package:frontend/pages/userside/chg_pwd.dart';
 import 'package:frontend/pages/userside/edit_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -82,7 +82,73 @@ class _userDetailState extends State<userDetail> {
       print('Error signing out: $e');
     }
   }
+ void _showSignOutDialog(){
+  showDialog(
+    context: context, 
+    builder: (BuildContext context){
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: AppColors.white,
+        content: Text("Log out of your account?", 
+        style: TTtextStyles.bodymediumRegular.copyWith(
+          color: Colors.black,
+          fontSize: 18
+        ),),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.secondaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: AppColors.secondaryColor,
+                  ),
+                  child: Text("Cancel",
+                  style: TTtextStyles.bodymediumBold.copyWith(
+                    color: AppColors.primaryColor,
+                    fontSize: 16,
+                    fontWeight:FontWeight.bold
+                  ),),
+                  ),
+              ),
+            const SizedBox(width: 10),
+             Expanded(
+               child: OutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    signOut();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: AppColors.primaryColor),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    backgroundColor: AppColors.primaryColor,
+                  ),
+                  child: Text("Log Out",
+                  style: TTtextStyles.bodymediumBold.copyWith(
+                    color: AppColors.white,
+                    fontSize: 16,
+                    fontWeight:FontWeight.bold
+                  ),),
+                  ),
+             ),
+            ],
+          ),
+        ],
+      );
+    });
+ }
 
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +160,7 @@ class _userDetailState extends State<userDetail> {
           children: [
             ProfileHeader(
                 profilePhotoUrl: _profilePhotoUrl, username: _username),
-            SettingsSection(signOutCallback: signOut,),
+            SettingsSection(signOutCallback: _showSignOutDialog),
           ],
         ),
       ),
@@ -270,12 +336,12 @@ class SettingsSection extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const SettingsRow(
+            SettingsRow(
               text: 'Change Password',
-              onTap: navigateToChangePassword,
+              onTap:()=> navigateToChangePassword(context),
             ),
             const Divider(color: AppColors.primaryColor),
-            const SettingsRow(
+            SettingsRow(
               text: 'Delete My Account',
               onTap: _showDeleteAccountDialog,
             ),
@@ -288,6 +354,10 @@ class SettingsSection extends StatelessWidget {
         ),
       ),
     );
+  }
+  
+
+  void _showDeleteAccountDialog() {
   }
 }
 
@@ -327,11 +397,10 @@ class SettingsRow extends StatelessWidget {
   }
 }
 
-void navigateToChangePassword() {
-  // Navigation logic here
-}
-
-void _showDeleteAccountDialog() {
-  // Show dialog logic here
+void navigateToChangePassword(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
+  );
 }
 
