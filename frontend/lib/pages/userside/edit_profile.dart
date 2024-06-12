@@ -1,7 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/userside/user_detail.dart';
@@ -18,11 +22,110 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   String _profilePhotoUrl = '';
+  String _usernameError='';
+  final String? backendUrl = dotenv.env['BACKEND_URL'];
 
   @override
   void initState() {
     super.initState();
-    _emailController.text = FirebaseAuth.instance.currentUser?.email ?? '';
+    _loadUserProfile();
+  }
+
+ Future<void> _loadUserProfile() async {
+  final prefs = await SharedPreferences.getInstance();
+  final idToken = prefs.getString('token');
+
+  try {
+    final response = await http.get(
+      Uri.parse('$backendUrl/user/getUserProfile'),
+      headers: {
+        'Authorization': 'Bearer $idToken',
+      },
+    );
+
+
+    if (response.statusCode == 200) {
+      final userProfile = jsonDecode(response.body);
+      setState(() {
+        _emailController.text = userProfile['email'] ?? '';
+        _usernameController.text = userProfile['username'] ?? '';
+        _profilePhotoUrl = userProfile['profileUrl'] ?? '';
+      });
+    }
+  } catch (e) {
+    print('Error loading user profile: $e');
+  }
+}
+
+
+  void _selectAndUploadProfilePhoto() async {
+  final picker = ImagePicker(); // Create an instance of ImagePicker
+  final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Pick an image from the gallery
+
+  if (pickedFile != null) {
+    final bytes = await pickedFile.readAsBytes(); // Read the selected image as bytes
+    setState(() {
+      _profileImageBytes = bytes; // Set the profile image bytes to display the preview
+    });
+    // await _uploadProfilePhoto(bytes); // Upload the image
+  }
+}
+
+
+  
+
+  Future<void> _updateProfile() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final idToken = prefs.getString('token');
+
+      if (idToken == null) {
+        throw Exception('No user token found');
+      }
+
+      final uri = Uri.parse('$backendUrl/user/updateProfile');
+      final request = http.MultipartRequest('POST', uri);
+      request.fields['idToken'] = idToken;
+      request.fields['username'] = _usernameController.text;
+
+      if (_profileImageBytes != null) {
+        request.files.add(http.MultipartFile.fromBytes(
+          'file',
+          _profileImageBytes!,
+          filename: 'profile.jpg',
+        ));
+      }
+
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        print('Profile updated successfully');
+        await prefs.setString('username', _usernameController.text);
+        if (_profileImageBytes != null) {
+          final responseData = jsonDecode(responseBody);
+          final newProfilePhotoUrl = responseData['user']['profileUrl'];
+          await prefs.setString('profilePhotoUrl', newProfilePhotoUrl);
+        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const userDetail(),
+          ),
+        );
+      } else {
+        final responseData = jsonDecode(responseBody);
+        if (response.statusCode == 400 && responseData['message'] == 'Username already exists') {
+          setState(() {
+            _usernameError = 'Username already exists. Try again.';
+          });
+        } else {
+          print('Failed to update profile: $responseBody');
+        }
+      }
+    } catch (error) {
+      print('Error updating profile: $error');
+    }
   }
 
   @override
@@ -48,6 +151,7 @@ class _EditProfileState extends State<EditProfile> {
                     TextFieldWithTitle(
                       title: 'Username',
                       controller: _usernameController,
+                      errorText: _usernameError,
                     ),
                     // Email
                     TextFieldWithTitle(
@@ -66,14 +170,7 @@ class _EditProfileState extends State<EditProfile> {
               width: 280,
               height: 50,
               child: OutlinedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const userDetail(),
-                    ),
-                  );
-                },
+                onPressed: _updateProfile,
                 style: OutlinedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   shape: RoundedRectangleBorder(
@@ -202,12 +299,14 @@ class TextFieldWithTitle extends StatelessWidget {
   final String title;
   final TextEditingController controller;
   final bool enabled;
+  final String errorText;
 
   const TextFieldWithTitle({
     Key? key,
     required this.title,
     required this.controller,
     this.enabled = true,
+    this.errorText='',
   }) : super(key: key);
 
   @override
@@ -237,6 +336,7 @@ class TextFieldWithTitle extends StatelessWidget {
               ),
               fillColor: AppColors.backgroundGrey,
               filled: true,
+               errorText: errorText.isEmpty ? null : errorText,
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.red),
@@ -247,8 +347,4 @@ class TextFieldWithTitle extends StatelessWidget {
       ),
     );
   }
-}
-
-void _selectAndUploadProfilePhoto() async {
-  // Your code for selecting and uploading profile photo
 }
