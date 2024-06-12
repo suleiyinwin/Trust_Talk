@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -48,8 +47,10 @@ class _EditProfileState extends State<EditProfile> {
         setState(() {
           _emailController.text = userProfile['email'] ?? '';
           _usernameController.text = userProfile['username'] ?? '';
-          _profilePhotoUrl = userProfile['profileUrl'] ?? '';
+          _profilePhotoUrl = userProfile['profileurl'] ?? '';
         });
+      } else {
+        print('Failed to load user profile: ${response.body}');
       }
     } catch (e) {
       print('Error loading user profile: $e');
@@ -57,7 +58,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> _selectAndUploadProfilePhoto() async {
-    final picker = ImagePicker(); // Create an instance of ImagePicker
+    final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
@@ -65,19 +66,9 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _profileImageBytes = bytes;
       });
-    // final pickedFile = await picker.pickImage(
-    //     source: ImageSource.gallery); // Pick an image from the gallery
+            print("Selected profile photo loaded: ${pickedFile.path}");
 
-    // if (pickedFile != null) {
-    //   final bytes =
-    //       await pickedFile.readAsBytes(); // Read the selected image as bytes
-    //   setState(() {
-    //     _profileImageBytes =
-    //         bytes; // Set the profile image bytes to display the preview
-    //   });
-      // await _uploadProfilePhoto(bytes); // Upload the image
-    //}
-  }
+    }
   }
 
   Future<void> _updateProfile() async {
@@ -100,18 +91,20 @@ class _EditProfileState extends State<EditProfile> {
           _profileImageBytes!,
           filename: 'profile.jpg',
         ));
+                print("Profile photo added to request");
+
       }
 
       final response = await request.send();
       final responseBody = await response.stream.bytesToString();
 
       if (response.statusCode == 200) {
-        print('Profile updated successfully');
         await prefs.setString('username', _usernameController.text);
-        if (_profileImageBytes != null) {
-          final responseData = jsonDecode(responseBody);
-          final newProfilePhotoUrl = responseData['user']['profileUrl'];
+        final responseData = jsonDecode(responseBody);
+        if (responseData['user'] != null && responseData['user']['profileurl'] != null) {
+          final newProfilePhotoUrl = responseData['user']['profileurl'];
           await prefs.setString('profilePhotoUrl', newProfilePhotoUrl);
+          print("New profile photo URL: $newProfilePhotoUrl");
         }
         Navigator.pushReplacement(
           context,

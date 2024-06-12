@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/authentication/login.dart';
 import 'package:frontend/pages/userside/edit_profile.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,7 +27,7 @@ class _userDetailState extends State<userDetail> {
     super.initState();
     _loadUserProfile();
   }
-
+  //Fetch User Detail
   Future<void> _loadUserProfile() async {
     final prefs = await SharedPreferences.getInstance();
     final idToken = prefs.getString('token');
@@ -43,13 +44,42 @@ class _userDetailState extends State<userDetail> {
         final userProfile = jsonDecode(response.body);
         setState(() {
           _username = userProfile['username'] ?? 'Username';
-          _profilePhotoUrl = userProfile['profileUrl'] ?? '';
+          _profilePhotoUrl = userProfile['profileurl'] ?? '';
         });
       } else {
         print('Failed to load user profile: ${response.body}');
       }
     } catch (e) {
       print('Error loading user profile: $e');
+    }
+  }
+ 
+ Future<void> signOut() async{
+  final prefs= await SharedPreferences.getInstance();
+  final idToken = prefs.getString('token');
+
+  if(idToken == null){
+    print ('No user token found');
+    return;
+  }
+  try{
+    final response = await http.post(
+      Uri.parse('$backendUrl/user/signOut'),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({'idToken':idToken}),
+    );
+  if (response.statusCode == 200) {
+        await prefs.remove('token');
+        Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Login()),
+        );
+      } else {
+        print('Failed to sign out: ${response.body}');
+      }
+    } catch (e) {
+      print('Error signing out: $e');
     }
   }
 
@@ -64,7 +94,7 @@ class _userDetailState extends State<userDetail> {
           children: [
             ProfileHeader(
                 profilePhotoUrl: _profilePhotoUrl, username: _username),
-            const SettingsSection(),
+            SettingsSection(signOutCallback: signOut,),
           ],
         ),
       ),
@@ -220,7 +250,12 @@ class EditProfileButton extends StatelessWidget {
 }
 
 class SettingsSection extends StatelessWidget {
-  const SettingsSection({Key? key}) : super(key: key);
+   final VoidCallback signOutCallback;
+  const SettingsSection({
+    required this.signOutCallback,
+    Key? key}) 
+    : super(key: key);
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -232,22 +267,22 @@ class SettingsSection extends StatelessWidget {
           color: AppColors.secondaryBackgroundColor,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: const Column(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            SettingsRow(
+            const SettingsRow(
               text: 'Change Password',
               onTap: navigateToChangePassword,
             ),
-            Divider(color: AppColors.primaryColor),
-            SettingsRow(
+            const Divider(color: AppColors.primaryColor),
+            const SettingsRow(
               text: 'Delete My Account',
               onTap: _showDeleteAccountDialog,
             ),
-            Divider(color: AppColors.primaryColor),
+            const Divider(color: AppColors.primaryColor),
             SettingsRow(
               text: 'Log Out',
-              onTap: signOut,
+              onTap: signOutCallback,
             ),
           ],
         ),
@@ -300,6 +335,3 @@ void _showDeleteAccountDialog() {
   // Show dialog logic here
 }
 
-void signOut() {
-  // Sign out logic here
-}

@@ -36,6 +36,8 @@ export const updateUserProfile = async (req, res) => {
 
         blobStream.on('finish', async () => {
           profileUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+          console.log('Profile URL:', profileUrl); 
+            await blob.makePublic();
           await updateUser(userId, username, profileUrl, res);
         });
 
@@ -64,13 +66,15 @@ const updateUser = async (userId, username, profileUrl, res) => {
       update.username = username;
     }
     if (profileUrl) {
-      update.profileUrl = profileUrl;
+      update.profileurl = profileUrl; 
     }
 
     const user = await User.findOneAndUpdate({ userId }, update, { new: true });
     if (!user) {
       return res.status(404).send({ message: 'User not found' });
     }
+
+    console.log('User updated:', user); // Debugging log
 
     res.send({ message: 'Profile updated successfully', user });
   } catch (error) {
@@ -79,25 +83,38 @@ const updateUser = async (userId, username, profileUrl, res) => {
 };
 
 export const getUserProfile = async (req, res) => {
-    try {
-      const authorizationHeader = req.headers.authorization;
-      if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-        return res.status(401).send({ message: 'Authorization header missing or incorrect' });
-      }
-      
-      const idToken = authorizationHeader.split('Bearer ')[1];
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      const userId = decodedToken.uid;
-  
-      const user = await User.findOne({ userId });
-      if (!user) {
-        return res.status(404).send({ message: 'User not found' });
-      }
-      
-      res.send(user);
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      res.status(500).send({ message: 'Error fetching user data', error: error.message });
+  try {
+    const authorizationHeader = req.headers.authorization;
+    if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+      return res.status(401).send({ message: 'Authorization header missing or incorrect' });
     }
-  };
-  
+
+    const idToken = authorizationHeader.split('Bearer ')[1];
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const userId = decodedToken.uid;
+
+    const user = await User.findOne({ userId });
+    if (!user) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    res.send(user);
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).send({ message: 'Error fetching user data', error: error.message });
+  }
+};
+
+export const signOutUser = async (req,res) => {
+    try{
+        const {idToken} = req.body;
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const userId = decodedToken.uid;
+
+        await admin.auth().revokeRefreshTokens(userId);
+
+        res.send({message : 'User signed out successfully'});
+    }catch (error){
+        res.status(500).send({message: 'Error signing out', error: error.message});
+    }
+}
