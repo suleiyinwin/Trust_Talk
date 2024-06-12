@@ -148,7 +148,106 @@ class _userDetailState extends State<userDetail> {
     });
  }
 
- 
+ Future<void> deleteAccount() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idToken = prefs.getString('token');
+
+    if (idToken == null) {
+      print('No user token found');
+      return;
+    }
+    try {
+      final response = await http.delete(
+        Uri.parse('$backendUrl/user/deleteAccount'),
+        headers: {
+          'Authorization': 'Bearer $idToken',
+        },
+      );
+      if (response.statusCode == 200) {
+        await prefs.remove('token');
+        Navigator.of(context, rootNavigator: true).pushReplacement(
+          MaterialPageRoute(builder: (context) => const Login()),
+        );
+      } else {
+        print('Failed to delete account: ${response.body}');
+      }
+    } catch (e) {
+      print('Error deleting account: $e');
+    }
+  }
+
+   void _showDeleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: AppColors.white,
+          content: Text(
+            "This action will delete your account permanently.\nAre you sure?",
+            style: TTtextStyles.bodymediumRegular.copyWith(
+              color: Colors.black,
+              fontSize: 18,
+            ),
+          ),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.secondaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: AppColors.secondaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      deleteAccount();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: AppColors.primaryColor,
+                    ),
+                    child: Text(
+                      "Delete",
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,7 +259,9 @@ class _userDetailState extends State<userDetail> {
           children: [
             ProfileHeader(
                 profilePhotoUrl: _profilePhotoUrl, username: _username),
-            SettingsSection(signOutCallback: _showSignOutDialog),
+            SettingsSection(
+              signOutCallback: _showSignOutDialog,
+              deleteAccountCallback: _showDeleteAccountDialog,),
           ],
         ),
       ),
@@ -317,8 +418,10 @@ class EditProfileButton extends StatelessWidget {
 
 class SettingsSection extends StatelessWidget {
    final VoidCallback signOutCallback;
+   final VoidCallback deleteAccountCallback;
   const SettingsSection({
     required this.signOutCallback,
+    required this.deleteAccountCallback,
     Key? key}) 
     : super(key: key);
  
@@ -343,7 +446,7 @@ class SettingsSection extends StatelessWidget {
             const Divider(color: AppColors.primaryColor),
             SettingsRow(
               text: 'Delete My Account',
-              onTap: _showDeleteAccountDialog,
+              onTap: deleteAccountCallback,
             ),
             const Divider(color: AppColors.primaryColor),
             SettingsRow(
@@ -356,9 +459,6 @@ class SettingsSection extends StatelessWidget {
     );
   }
   
-
-  void _showDeleteAccountDialog() {
-  }
 }
 
 class SettingsRow extends StatelessWidget {

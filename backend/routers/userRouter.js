@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { updateUserProfile, getUserProfile, signOutUser, changePassword } from '../controllers/userManagement/userEdit.js';
+import { updateUserProfile, getUserProfile, signOutUser, changePassword, deleteAccount } from '../controllers/userManagement/userEdit.js';
 
 const userRouter = Router();
 
@@ -14,4 +14,7 @@ userRouter.post('/signOut',signOutUser);
 
 //Change password
 userRouter.post('/changePassword', changePassword);
+
+//Delete Account
+userRouter.delete('/deleteAccount', deleteAccount);
 export default userRouter;
