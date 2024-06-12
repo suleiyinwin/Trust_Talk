@@ -161,3 +161,31 @@ export const changePassword = async (req, res) => {
         res.status(500).send({ message: 'Error changing password', error: error.message });
     }
 };
+
+export const deleteAccount = async (req, res) => {
+    try {
+        // Get the authorization header and verify the token
+        const authorizationHeader = req.headers.authorization;
+        if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
+            return res.status(401).send({ message: 'Authorization header missing or incorrect' });
+        }
+
+        const idToken = authorizationHeader.split('Bearer ')[1];
+        const decodedToken = await admin.auth().verifyIdToken(idToken);
+        const userId = decodedToken.uid;
+
+        // Delete user from Firebase Authentication
+        await admin.auth().deleteUser(userId);
+
+        // Delete user data from database
+        const user = await User.findOneAndDelete({ userId });
+        if (!user) {
+            return res.status(404).send({ message: 'User not found' });
+        }
+
+        res.send({ message: 'User account deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting user account:', error);
+        res.status(500).send({ message: 'Error deleting user account', error: error.message });
+    }
+};
