@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/other_msg.dart';
+import 'package:frontend/components/own_msg.dart';
 import 'package:frontend/components/textstyles.dart';
 
 class IndiChat extends StatefulWidget {
@@ -34,7 +36,12 @@ class _IndiChatState extends State<IndiChat> {
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [
-            ListView(),
+            ListView(
+              children: const [
+                OwnMsg(),
+                OtherMsg(),
+              ],
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Row(
