@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/pages/userside/chats.dart';
+import 'package:frontend/pages/userside/experts.dart';
 import 'package:frontend/pages/userside/home.dart';
 import 'package:frontend/pages/userside/user_detail.dart';
 
@@ -69,8 +71,8 @@ class _BottomNavState extends State<BottomNav> {
         child: IndexedStack(
           index: _selectedIndex,
           children: const <Widget>[
-            // ChatPage(),
-            // ExpertsPage(),
+            ChatPage(),
+            ExpertsPage(),
             Home(),
             // TestCentersPage(),
             userDetail(),
