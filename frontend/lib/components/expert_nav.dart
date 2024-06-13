@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
-import 'package:frontend/pages/userside/home.dart';
-import 'package:frontend/pages/userside/user_detail.dart';
 
-class BottomNav extends StatefulWidget {
-  const BottomNav({super.key});
+
+class ExpertNav extends StatefulWidget {
+  const ExpertNav({super.key});
 
   @override
-  State<BottomNav> createState() => _BottomNavState();
+  State<ExpertNav> createState() => _ExpertNavState();
 }
 
-class _BottomNavState extends State<BottomNav> {
+class _ExpertNavState extends State<ExpertNav> {
   int _selectedIndex = 0;
 
   @override
@@ -46,21 +45,13 @@ class _BottomNavState extends State<BottomNav> {
               selectedIcon: Icon(Icons.question_answer, color: AppColors.primaryColor), 
               label: "Chat",),
             NavigationDestination(
-              icon: Icon(Icons.groups_outlined),
-              selectedIcon: Icon(Icons.groups, color: AppColors.primaryColor), 
-              label: "Experts",),
-            NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home, color: AppColors.primaryColor), 
               label: "Home",),
             NavigationDestination(
-              icon: Icon(Icons.location_on_outlined),
-              selectedIcon: Icon(Icons.location_on, color: AppColors.primaryColor), 
-              label: 'Clinics'),
-            NavigationDestination(
               icon: Icon(Icons.account_circle_outlined),
               selectedIcon: Icon(Icons.account_circle, color: AppColors.primaryColor), 
-              label: 'Profile'),
+              label: "Profile"),
           ],
         ),
       ),
@@ -70,10 +61,8 @@ class _BottomNavState extends State<BottomNav> {
           index: _selectedIndex,
           children: const <Widget>[
             // ChatPage(),
-            // ExpertsPage(),
-            Home(),
-            // TestCentersPage(),
-            userDetail(),
+            // Home(),
+            // userDetail(),
           ],
         ),
       ),
