@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/userside/experts_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ExpertsPage extends StatelessWidget {
   const ExpertsPage({super.key});
@@ -48,11 +49,13 @@ class ExpertsPage extends StatelessWidget {
 
 //Expert class
 class Expert {
+  final String expertId;
   final String name;
   final String specialty;
   final String profileUrl;
 
   Expert({
+    required this.expertId,
     required this.name,
     required this.specialty,
     required this.profileUrl,
@@ -60,6 +63,7 @@ class Expert {
 
   factory Expert.fromJson(Map<String, dynamic> json) {
     return Expert(
+      expertId: json['expertId'],
       name: json['name'],
       specialty: json['specility'],
       profileUrl: json['profileurl'],
@@ -94,6 +98,34 @@ class _AllExpertsState extends State<AllExperts> {
       throw Exception('Failed to load experts');
     }
   }
+
+  Future<void> _createChat(String expertId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null) {
+      // Open chat
+      final response = await http.post(
+        Uri.parse('$backendUrl/chat/createChat'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'expertId': expertId, 'token': token}),
+      );
+
+      if (response.statusCode == 201) {
+        // final chat = jsonDecode(response.body);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const IndiChat(),
+          ),
+        );
+      } else {
+        // Handle error
+      }
+    } else {
+      // Redirect to login
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -115,11 +147,7 @@ class _AllExpertsState extends State<AllExperts> {
                   name: snapshot.data![index].name,
                   specialty: snapshot.data![index].specialty,
                   profileUrl: snapshot.data![index].profileUrl,
-                  onPressed: () => Navigator.push(
-                    context, MaterialPageRoute(
-                      builder: (context) => const IndiChat()
-                    )
-                  )
+                  onPressed: () => _createChat(snapshot.data![index].expertId),
                 );
               },
             );
