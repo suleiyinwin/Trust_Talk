@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/pages/userside/chatroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
@@ -114,6 +115,11 @@ class _AllExpertsState extends State<AllExperts> {
                   name: snapshot.data![index].name,
                   specialty: snapshot.data![index].specialty,
                   profileUrl: snapshot.data![index].profileUrl,
+                  onPressed: () => Navigator.push(
+                    context, MaterialPageRoute(
+                      builder: (context) => const IndiChat()
+                    )
+                  )
                 );
               },
             );

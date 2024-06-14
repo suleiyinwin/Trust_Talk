@@ -6,11 +6,13 @@ class ExpertsCard extends StatelessWidget {
   final String name;
   final String specialty;
   final String profileUrl;
+  final VoidCallback onPressed;
 
   const ExpertsCard({
     required this.name,
     required this.specialty,
     required this.profileUrl,
+    required this.onPressed,
     super.key,
   });
 
@@ -34,9 +36,12 @@ class ExpertsCard extends StatelessWidget {
             ),
             title: Text(name),
             subtitle: Text(specialty),
-            trailing: const Icon(
-              CupertinoIcons.chat_bubble_2_fill,
-              color: AppColors.primaryColor,
+            trailing: IconButton(
+              icon: const Icon(
+                CupertinoIcons.chat_bubble_2_fill,
+                color: AppColors.primaryColor,
+              ),
+              onPressed: onPressed,
             ),
           ),
         ),
