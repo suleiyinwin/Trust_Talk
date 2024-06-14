@@ -111,7 +111,7 @@ class _AllExpertsState extends State<AllExperts> {
         body: jsonEncode({'expertId': expertId, 'token': token}),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 201 || response.statusCode == 200) {
         // final chat = jsonDecode(response.body);
         Navigator.push(
           context,

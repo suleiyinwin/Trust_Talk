@@ -12,6 +12,16 @@ const createChat = async (req, res) => {
         const { expertId, token } = req.body;
         const decodedToken = await admin.auth().verifyIdToken(token);
         const userId = decodedToken.uid;
+
+        // Check if a chat between the user and expert already exists
+        const existingChat = await Chat.findOne({
+            members: { $all: [userId, expertId] }
+        });
+
+        if (existingChat) {
+            return res.status(200).json(existingChat);
+        }
+        
         const chatId = uuidv4(); // Generate unique chatId
 
         const newChat = new Chat({
