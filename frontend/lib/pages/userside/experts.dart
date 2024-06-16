@@ -112,15 +112,18 @@ class _AllExpertsState extends State<AllExperts> {
       );
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        // final chat = jsonDecode(response.body);
+        final chat = json.decode(response.body);
+        // print(chat);
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const IndiChat(),
+            builder: (context) => IndiChat(
+              chat: chat,
+            ),
           ),
         );
       } else {
-        // Handle error
+        throw Exception('Failed to create chat');
       }
     } else {
       // Redirect to login
