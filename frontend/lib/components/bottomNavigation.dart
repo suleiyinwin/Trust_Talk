@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/pages/testCenters/map_view.dart';
 import 'package:frontend/pages/userside/home.dart';
 import 'package:frontend/pages/userside/user_detail.dart';
 
@@ -72,7 +73,7 @@ class _BottomNavState extends State<BottomNav> {
             // ChatPage(),
             // ExpertsPage(),
             Home(),
-            // TestCentersPage(),
+            mapView(),
             userDetail(),
           ],
         ),

@@ -27,6 +27,7 @@ class _userDetailState extends State<userDetail> {
     super.initState();
     _loadUserProfile();
   }
+
   //Fetch User Detail
   Future<void> _loadUserProfile() async {
     final prefs = await SharedPreferences.getInstance();
@@ -53,24 +54,24 @@ class _userDetailState extends State<userDetail> {
       print('Error loading user profile: $e');
     }
   }
- 
- Future<void> signOut() async{
-  final prefs= await SharedPreferences.getInstance();
-  final idToken = prefs.getString('token');
 
-  if(idToken == null){
-    print ('No user token found');
-    return;
-  }
-  try{
-    final response = await http.post(
-      Uri.parse('$backendUrl/user/signOut'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode({'idToken':idToken}),
-    );
-  if (response.statusCode == 200) {
+  Future<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    final idToken = prefs.getString('token');
+
+    if (idToken == null) {
+      print('No user token found');
+      return;
+    }
+    try {
+      final response = await http.post(
+        Uri.parse('$backendUrl/user/signOut'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'idToken': idToken}),
+      );
+      if (response.statusCode == 200) {
         await prefs.remove('token');
         Navigator.of(context, rootNavigator: true).pushReplacement(
           MaterialPageRoute(builder: (context) => const Login()),
@@ -82,73 +83,76 @@ class _userDetailState extends State<userDetail> {
       print('Error signing out: $e');
     }
   }
- void _showSignOutDialog(){
-  showDialog(
-    context: context, 
-    builder: (BuildContext context){
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          backgroundColor: AppColors.white,
-        content: Text("Log out of your account?", 
-        style: TTtextStyles.bodymediumRegular.copyWith(
-          color: Colors.black,
-          fontSize: 18
-        ),),
-        actions: [
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.secondaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    backgroundColor: AppColors.secondaryColor,
-                  ),
-                  child: Text("Cancel",
-                  style: TTtextStyles.bodymediumBold.copyWith(
-                    color: AppColors.primaryColor,
-                    fontSize: 16,
-                    fontWeight:FontWeight.bold
-                  ),),
-                  ),
-              ),
-            const SizedBox(width: 10),
-             Expanded(
-               child: OutlinedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    signOut();
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: AppColors.primaryColor),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    backgroundColor: AppColors.primaryColor,
-                  ),
-                  child: Text("Log Out",
-                  style: TTtextStyles.bodymediumBold.copyWith(
-                    color: AppColors.white,
-                    fontSize: 16,
-                    fontWeight:FontWeight.bold
-                  ),),
-                  ),
-             ),
-            ],
-          ),
-        ],
-      );
-    });
- }
 
- Future<void> deleteAccount() async {
+  void _showSignOutDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            backgroundColor: AppColors.white,
+            content: Text(
+              "Log out of your account?",
+              style: TTtextStyles.bodymediumRegular
+                  .copyWith(color: Colors.black, fontSize: 18),
+            ),
+            actions: [
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.secondaryColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: AppColors.secondaryColor,
+                      ),
+                      child: Text(
+                        "Cancel",
+                        style: TTtextStyles.bodymediumBold.copyWith(
+                            color: AppColors.primaryColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        signOut();
+                      },
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(color: AppColors.primaryColor),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        backgroundColor: AppColors.primaryColor,
+                      ),
+                      child: Text(
+                        "Log Out",
+                        style: TTtextStyles.bodymediumBold.copyWith(
+                            color: AppColors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
+  }
+
+  Future<void> deleteAccount() async {
     final prefs = await SharedPreferences.getInstance();
     final idToken = prefs.getString('token');
 
@@ -176,7 +180,7 @@ class _userDetailState extends State<userDetail> {
     }
   }
 
-   void _showDeleteAccountDialog() {
+  void _showDeleteAccountDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -248,11 +252,14 @@ class _userDetailState extends State<userDetail> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(),
-      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.white,
+        toolbarHeight: 10.0,
+      ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -261,7 +268,8 @@ class _userDetailState extends State<userDetail> {
                 profilePhotoUrl: _profilePhotoUrl, username: _username),
             SettingsSection(
               signOutCallback: _showSignOutDialog,
-              deleteAccountCallback: _showDeleteAccountDialog,),
+              deleteAccountCallback: _showDeleteAccountDialog,
+            ),
           ],
         ),
       ),
@@ -269,31 +277,31 @@ class _userDetailState extends State<userDetail> {
   }
 }
 
-class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const CustomAppBar({super.key});
+// class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
+//   const CustomAppBar({super.key});
 
-  @override
-  State<CustomAppBar> createState() => _CustomAppBarState();
+//   @override
+//   State<CustomAppBar> createState() => _CustomAppBarState();
 
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-}
+//   @override
+//   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+// }
 
-class _CustomAppBarState extends State<CustomAppBar> {
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const BottomNav()),
-            (route) => false,
-          ),
-        ));
-  }
-}
+// class _CustomAppBarState extends State<CustomAppBar> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return AppBar(
+//         backgroundColor: AppColors.backgroundColor,
+//         leading: IconButton(
+//           icon: const Icon(Icons.arrow_back_ios_new_rounded),
+//           onPressed: () => Navigator.pushAndRemoveUntil(
+//             context,
+//             MaterialPageRoute(builder: (context) => const BottomNav()),
+//             (route) => false,
+//           ),
+//         ));
+//   }
+// }
 
 class ProfileHeader extends StatelessWidget {
   final String profilePhotoUrl;
@@ -417,14 +425,13 @@ class EditProfileButton extends StatelessWidget {
 }
 
 class SettingsSection extends StatelessWidget {
-   final VoidCallback signOutCallback;
-   final VoidCallback deleteAccountCallback;
-  const SettingsSection({
-    required this.signOutCallback,
-    required this.deleteAccountCallback,
-    Key? key}) 
-    : super(key: key);
- 
+  final VoidCallback signOutCallback;
+  final VoidCallback deleteAccountCallback;
+  const SettingsSection(
+      {required this.signOutCallback,
+      required this.deleteAccountCallback,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +448,7 @@ class SettingsSection extends StatelessWidget {
           children: [
             SettingsRow(
               text: 'Change Password',
-              onTap:()=> navigateToChangePassword(context),
+              onTap: () => navigateToChangePassword(context),
             ),
             const Divider(color: AppColors.primaryColor),
             SettingsRow(
@@ -458,7 +465,6 @@ class SettingsSection extends StatelessWidget {
       ),
     );
   }
-  
 }
 
 class SettingsRow extends StatelessWidget {
@@ -503,4 +509,3 @@ void navigateToChangePassword(BuildContext context) {
     MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
   );
 }
-
