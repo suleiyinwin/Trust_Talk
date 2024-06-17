@@ -3,7 +3,13 @@ import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 
 class OwnMsg extends StatelessWidget {
-  const OwnMsg({super.key});
+  final String message;
+  final String time;
+
+  const OwnMsg({
+    required this.message,
+    required this.time,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class OwnMsg extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Text('1:04 PM', style: TTtextStyles.bodysmallRegular),
+            Text(time, style: TTtextStyles.bodysmallRegular),
             Card(
               margin: const EdgeInsets.only(left: 5, right: 3),
               color: AppColors.primaryColor,
@@ -26,7 +32,10 @@ class OwnMsg extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text('Hello, doctor?',     style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)),
+                child: Text(
+                  message,
+                  style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)
+                ),
               ),
             ),
           ],

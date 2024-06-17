@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
@@ -22,7 +21,7 @@ class IndiChat extends StatefulWidget {
 
 class _IndiChatState extends State<IndiChat> {
   final TextEditingController _messageController = TextEditingController();
-  final SocketService socketService = SocketService();
+  final SocketService _socketService = SocketService();
   final String? backendUrl = dotenv.env['BACKEND_URL'];
   Map<String, dynamic>? expertInfo;
   bool isLoading = true;
@@ -30,9 +29,23 @@ class _IndiChatState extends State<IndiChat> {
   @override
   void initState(){
     super.initState();
+    _socketService.initializeSocket(widget.chat['chatId']);
     fetchAndSetExpertInfo();
   }
 
+  void sendMessage() {
+    if (_messageController.text.isNotEmpty) {
+      _socketService.sendMessage(
+        _messageController.text,
+        widget.chat['_id'],
+        widget.chat['members'][0],
+        widget.chat['members'][1],
+      );
+      _messageController.clear();
+    }
+  }
+
+  // Fetch expert information and set the state
   Future<void> fetchAndSetExpertInfo() async {
     try {
       final info = await fetchExpertInfo(widget.chat['members'][1]);
@@ -45,10 +58,12 @@ class _IndiChatState extends State<IndiChat> {
         isLoading = false;
       });
       // Handle the error appropriately in your UI
+      // ignore: avoid_print
       print(error);
     }
   }
 
+  // Fetch expert information
   Future<Map<String, dynamic>> fetchExpertInfo(String expertId) async {
     final response = await http.get(Uri.parse('$backendUrl/chat/expertinfo/$expertId'));
 
@@ -59,9 +74,10 @@ class _IndiChatState extends State<IndiChat> {
     }
   }
 
-
   @override
   void dispose() {
+    _socketService.dispose();
+    _messageController.dispose();
     super.dispose();
   }
 
@@ -78,7 +94,7 @@ class _IndiChatState extends State<IndiChat> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(expertInfo?['name'] ?? 'Unknown', style: TTtextStyles.bodylargeBold),
+            Text(expertInfo?['name'] ?? 'Expert', style: TTtextStyles.bodylargeBold),
             Text(
               expertInfo?['isActive'] == true ? 'online' : 'offline',
               style: TTtextStyles.bodymediumRegular),
@@ -93,7 +109,7 @@ class _IndiChatState extends State<IndiChat> {
           children: [
             ListView(
               children: const [
-                OwnMsg(),
+                // OwnMsg(),
                 OtherMsg(),
               ],
             ),
@@ -133,7 +149,7 @@ class _IndiChatState extends State<IndiChat> {
                       child: IconButton(
                         icon: const Icon(Icons.send),
                         color: AppColors.primaryColor,
-                        onPressed: () {},
+                        onPressed: sendMessage,
                       ),
                     ),
                   ),

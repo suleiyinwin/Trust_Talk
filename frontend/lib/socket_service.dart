@@ -1,43 +1,45 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:logger/logger.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class SocketService {
   late IO.Socket socket;
+  final Logger logger = Logger();
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
-  void connect(String chatId) {
+  void initializeSocket(String chatId) {
+    logger.i('Initializing socket connection...');
     socket = IO.io(backendUrl, <String, dynamic>{
       'transports': ['websocket'],
-      'autoConnect': true,
+      'autoConnect': false,
     });
 
     socket.connect();
+    socket.emit("createRoom", chatId);
 
-    socket.on('connect', (_) {
-      print('connected to socket server');
-      socket.emit('join', chatId);
-    });
-
-    socket.on('disconnect', (_) {
-      print('disconnected from socket server');
-    });
-
-    // Add more event handlers as needed
-  }
-
-  void disconnect(String chatId) {
-    socket.emit('leave', chatId);
-    socket.disconnect();
-  }
-
-  void sendMessage(String chatId, String message) {
-    socket.emit('message', {
-      'chatId': chatId,
-      'message': message,
+    // Optionally handle incoming messages
+    socket.on('message', (data) {
+      logger.d('Received message: $data');
     });
   }
 
-  void onMessage(Function(dynamic) callback) {
-    socket.on('message', callback);
+  void sendMessage(String message, String chatId, String senderId, String receiverId) {
+    if (message.isNotEmpty) {
+      logger.i('Sending message: $message');
+      socket.emit('sendMessage', {
+        'message': message,
+        'chatId': chatId,
+        'senderId': senderId,
+        'receiverId': receiverId,
+        'timestamp': DateTime.now().toIso8601String(),
+      });
+    } else {
+      logger.w('Attempted to send an empty message');
+    }
+  }
+
+  void dispose() {
+    logger.i('Disposing socket...');
+    socket.dispose();
   }
 }
