@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/expertlogin.dart';
 import 'package:frontend/pages/education_content/createpreview.dart';
+import 'package:frontend/pages/education_content/expert_contents.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExpertHome extends StatefulWidget {
@@ -59,6 +59,8 @@ class _ExpertHomeState extends State<ExpertHome> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CreatePreview(),
+              SizedBox(height: 7,),
+              ExpertContents(),
             ],
           ),
         ),

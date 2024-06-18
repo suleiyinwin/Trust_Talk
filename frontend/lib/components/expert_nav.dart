@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/pages/expertSide/expert_home.dart';
 
 
 class ExpertNav extends StatefulWidget {
@@ -60,9 +63,9 @@ class _ExpertNavState extends State<ExpertNav> {
         child: IndexedStack(
           index: _selectedIndex,
           children: const <Widget>[
-            // ChatPage(),
-            // Home(),
-            // userDetail(),
+            Placeholder(),
+            ExpertHome(),
+            Placeholder(),
           ],
         ),
       ),

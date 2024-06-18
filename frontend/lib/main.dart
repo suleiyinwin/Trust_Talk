@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/authentication/expertlogin.dart';
 import 'package:frontend/pages/authentication/splashscreen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future<void> main() async {
