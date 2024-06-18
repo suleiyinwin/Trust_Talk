@@ -17,13 +17,13 @@ class OtherMsg extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                radius: 15,
-                backgroundImage: AssetImage('images/logo.png') as ImageProvider,
-              ),
-            ),
+            // const Padding(
+            //   padding: EdgeInsets.all(8.0),
+            //   child: CircleAvatar(
+            //     radius: 15,
+            //     backgroundImage: AssetImage('images/logo.png') as ImageProvider,
+            //   ),
+            // ),
             Card(
               margin: const EdgeInsets.only(left: 5, right: 3),
               color: AppColors.primaryColor,

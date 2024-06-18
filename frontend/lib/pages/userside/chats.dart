@@ -121,16 +121,19 @@ class ChatCard extends StatelessWidget {
       onTap: () => Navigator.push(
         context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
         ),
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: 30,
-          backgroundImage: expertInfo['profileurl'] != null
-              ? NetworkImage(expertInfo['profileurl'])
-              : const AssetImage('images/logo.png') as ImageProvider,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          leading: CircleAvatar(
+            radius: 30,
+            backgroundImage: expertInfo['profileurl'] != null
+                ? NetworkImage(expertInfo['profileurl'])
+                : const AssetImage('images/logo.png') as ImageProvider,
+          ),
+          title: Text(expertInfo['name'] ?? 'Expert', style: TTtextStyles.bodylargeBold),
+          subtitle: Text(chat['lastMessage'] ?? ''),
+          trailing: const Text('18:04') ,
         ),
-        title: Text(expertInfo['name'] ?? 'Expert', style: TTtextStyles.bodylargeBold),
-        subtitle: Text(chat['lastMessage'] ?? ''),
-        trailing: const Text('18:04') ,
       ),
     );
   }

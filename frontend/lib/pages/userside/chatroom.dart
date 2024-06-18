@@ -100,6 +100,17 @@ class _IndiChatState extends State<IndiChat> {
               style: TTtextStyles.bodymediumRegular),
           ],
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: CircleAvatar(
+              radius: 20,
+              backgroundImage: expertInfo?['profileurl'] != null
+                ? NetworkImage(expertInfo?['profileurl'])
+                : const AssetImage('images/logo.png') as ImageProvider,
+            ),
+          ),
+        ],
       ),
       backgroundColor: AppColors.backgroundColor,
       body: SizedBox(
