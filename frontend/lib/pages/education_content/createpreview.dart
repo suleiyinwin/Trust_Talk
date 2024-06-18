@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -53,11 +52,11 @@ class _CreatePreviewState extends State<CreatePreview> {
       print(e);
     }
   }
+
   void _navigateToCreateContent() {
-    Navigator.pushAndRemoveUntil(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CreateContent()),
-      (route) => false,
     );
   }
 
@@ -90,10 +89,11 @@ class _CreatePreviewState extends State<CreatePreview> {
                         )
                       : Container(),
                   const SizedBox(width: 20),
-                  const Text('Write an education content.',
+                  const Text('Write an educational content.',
                       style: TTtextStyles.bodymediumRegular),
                   const Spacer(),
-                  const Icon(Icons.edit, size: 20, color: AppColors.primaryColor),
+                  const Icon(Icons.edit,
+                      size: 20, color: AppColors.primaryColor),
                 ],
               ),
             ),

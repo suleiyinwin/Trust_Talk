@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/components/expert_nav.dart';
 import 'package:frontend/components/textstyles.dart';
-import 'package:frontend/pages/expertSide/expertHome.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +28,7 @@ class _ExpertLoginState extends State<ExpertLogin> {
     super.initState();
     passwordVisibleOne = true;
   }
+
   final String? backendUrl = dotenv.env['BACKEND_URL'];
   void login() async {
     try {
@@ -55,7 +56,7 @@ class _ExpertLoginState extends State<ExpertLogin> {
           // Check if the widget is still mounted
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const ExpertHome()),
+            MaterialPageRoute(builder: (context) => const ExpertNav()),
             (route) => false,
           );
         }
@@ -68,7 +69,7 @@ class _ExpertLoginState extends State<ExpertLogin> {
     } catch (e) {
       setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-          print(errorMessageforapi);
+        print(errorMessageforapi);
       });
     }
   }
@@ -206,14 +207,14 @@ class _ExpertLoginState extends State<ExpertLogin> {
                         login();
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       'Login',
                       style: TTtextStyles.subheadlineBold.copyWith(
                         color: AppColors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
               ),
             ],
           ),

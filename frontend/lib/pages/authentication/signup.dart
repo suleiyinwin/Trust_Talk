@@ -294,11 +294,11 @@ class _SignupState extends State<Signup> {
                         signUp();
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       'Register',
-                     style: TTtextStyles.subheadlineBold.copyWith(
+                      style: TTtextStyles.subheadlineBold.copyWith(
                         color: AppColors.white,
-                    ),
+                      ),
                     ),
                   ),
                 ),
@@ -307,10 +307,10 @@ class _SignupState extends State<Signup> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text(
+                  Text(
                     'Already have an account?',
-                    style: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.textColor),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
@@ -320,10 +320,11 @@ class _SignupState extends State<Signup> {
                         (Route<dynamic> route) => false,
                       );
                     },
-                    child:  Text(
+                    child: Text(
                       'Login',
                       style: TTtextStyles.bodymediumBold.copyWith(
-                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        color: AppColors.primaryColor,
+                        decoration: TextDecoration.underline,
                         decorationColor: AppColors.primaryColor,
                       ),
                     ),
