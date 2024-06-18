@@ -22,7 +22,7 @@ const login = async (req, res) => {
         // Verify the ID token using Firebase Admin SDK
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         if (decodedToken) {
-            res.status(200).json({ token: idToken });
+            res.status(200).json({ token: idToken, userId : user.userId });
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
         }

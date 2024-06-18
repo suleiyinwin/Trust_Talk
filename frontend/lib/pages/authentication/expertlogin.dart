@@ -43,17 +43,20 @@ class _ExpertLoginState extends State<ExpertLogin> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final String token = responseBody['token'];
+        final String expertId = responseBody['expertId'];
 
         // Store the token using shared_preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+        await prefs.setString('expertId', expertId);
 
         // Navigate to the home page or another page
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const ExpertHome()),
+            (route) => false,
           );
         }
       } else {

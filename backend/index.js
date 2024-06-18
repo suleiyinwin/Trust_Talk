@@ -16,7 +16,7 @@ const app = express();
 const server = http.createServer(app); // Create an HTTP server
 const io = new SocketIOServer(server); // Attach socket.io to the server
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 connectDB();
 
