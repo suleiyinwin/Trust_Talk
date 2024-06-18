@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/authentication/expertlogin.dart';
 import 'package:frontend/pages/authentication/splashscreen.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/pages/expertSide/expertHome.dart';
 Future<void> main() async {
   try {
     await dotenv.load(fileName: ".env");
@@ -19,7 +21,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       title: 'trust_talk',
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home: ExpertLogin(),
     );
   }
 }

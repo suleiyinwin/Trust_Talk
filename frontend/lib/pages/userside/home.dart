@@ -19,13 +19,17 @@ class _HomeState extends State<Home> {
   Future<void> _checkForToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('token');
+    String? userId = prefs.getString('userId');
 
-    if (token == null) {
+    if (token == null || userId == null) {
       // No token found, navigate to the login page
-      Navigator.pushReplacement(
+      if (mounted) {
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const Signup()),
+        (route) => false,
       );
+      }
     }
   }
 

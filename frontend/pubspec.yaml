@@ -78,6 +78,7 @@ flutter:
   uses-material-design: true
   assets:
     - images/logo.png
+    - images/contentImage.png
     - .env
     - fonts/
     - images/default_profile.png

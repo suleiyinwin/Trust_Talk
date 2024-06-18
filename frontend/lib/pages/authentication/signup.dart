@@ -53,9 +53,10 @@ class _SignupState extends State<Signup> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const Login()),
+            (Route<dynamic> route) => false,
           );
         }
       } else {
@@ -313,9 +314,10 @@ class _SignupState extends State<Signup> {
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const Login()),
+                        (Route<dynamic> route) => false,
                       );
                     },
                     child:  Text(
