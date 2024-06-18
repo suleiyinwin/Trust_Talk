@@ -73,7 +73,7 @@ class _BottomNavState extends State<BottomNav> {
             // ChatPage(),
             // ExpertsPage(),
             Home(),
-            mapView(),
+            MapView(),
             userDetail(),
           ],
         ),
