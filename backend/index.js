@@ -10,7 +10,7 @@ import mapRouter from './routers/mapRouter.js';
 import userRouter from './routers/userRouter.js';
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 connectDB();
 
