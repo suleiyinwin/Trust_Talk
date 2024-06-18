@@ -52,11 +52,11 @@ class _CreatePreviewState extends State<CreatePreview> {
       print(e);
     }
   }
+
   void _navigateToCreateContent() {
-    Navigator.pushAndRemoveUntil(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CreateContent()),
-      (route) => false,
     );
   }
 
@@ -92,7 +92,8 @@ class _CreatePreviewState extends State<CreatePreview> {
                   const Text('Write an educational content.',
                       style: TTtextStyles.bodymediumRegular),
                   const Spacer(),
-                  const Icon(Icons.edit, size: 20, color: AppColors.primaryColor),
+                  const Icon(Icons.edit,
+                      size: 20, color: AppColors.primaryColor),
                 ],
               ),
             ),

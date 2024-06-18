@@ -1,23 +1,26 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
+import 'package:frontend/components/expert_nav.dart';
+import 'package:frontend/components/textstyles.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/components/expert_nav.dart';
-import 'package:http/http.dart' as http;
 import 'package:frontend/components/colors.dart';
-import 'package:frontend/components/textstyles.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class CreateContent extends StatefulWidget {
-  const CreateContent({super.key});
+class EditContent extends StatefulWidget {
+  final String contentId;
+  const EditContent({super.key, required this.contentId});
 
   @override
-  State<CreateContent> createState() => _CreateContentState();
+  State<EditContent> createState() => _EditContentState();
 }
 
-class _CreateContentState extends State<CreateContent> {
+class _EditContentState extends State<EditContent> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _contentController = TextEditingController();
@@ -30,8 +33,8 @@ class _CreateContentState extends State<CreateContent> {
     'Others'
   ];
   String formattedDate = "";
-  String errorMessage = '';
-  String _readingTime = '1 min read';
+  String errorMessage = "";
+  String _readingTime = "1 min read";
 
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
@@ -39,12 +42,55 @@ class _CreateContentState extends State<CreateContent> {
   void initState() {
     super.initState();
     formattedDate = getCurrentDateFormatted();
+    _getContentData();
   }
 
   String getCurrentDateFormatted() {
     final now = DateTime.now();
     final formatter = DateFormat('d MMMM yyyy');
     return formatter.format(now);
+  }
+
+  Future<void> _getContentData() async {
+    try {
+      final url = Uri.parse('$backendUrl/edu/getContentData');
+      print(widget.contentId);
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(<String, String>{
+          'contentId': widget.contentId,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody = jsonDecode(response.body);
+        setState(() {
+          _titleController.text = responseBody['title'];
+          _contentController.text = responseBody['content'];
+          _selectedCategory = responseBody['category'];
+          _loadImageFromUrl(responseBody['contenturl']);
+        });
+      } else {
+        print('Failed with status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> _loadImageFromUrl(String url) async {
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        setState(() {
+          _contentImage = response.bodyBytes;
+        });
+      } else {
+        print('Failed to load image');
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   String calculateReadingTime(String content) {
@@ -54,17 +100,25 @@ class _CreateContentState extends State<CreateContent> {
     return '$readingTimeMinutes min read';
   }
 
-  void publish() async {
+  Future<void> _uploadContent() async {
+    final ImagePicker imagePicker = ImagePicker();
+    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      final bytes = await pickedFile.readAsBytes();
+      setState(() {
+        _contentImage = bytes.buffer.asUint8List();
+      });
+    }
+  }
+
+  Future<void> _updateContent() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final expertIdNullable = prefs.getString('expertId');
-      final expertId = expertIdNullable!;
-      final url = Uri.parse('$backendUrl/edu/createContent');
+      final url = Uri.parse('$backendUrl/edu/updateContent');
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(<String, dynamic>{
-          'expertId': expertId,
+          'contentId': widget.contentId,
           'title': _titleController.text,
           'content': _contentController.text,
           'category': _selectedCategory,
@@ -94,13 +148,33 @@ class _CreateContentState extends State<CreateContent> {
     }
   }
 
-  Future<void> _uploadContent() async {
-    final ImagePicker imagePicker = ImagePicker();
-    final pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      final bytes = await pickedFile.readAsBytes();
+  Future<void> _deleteContent() async {
+    try {
+      final url = Uri.parse('$backendUrl/edu/deleteContent');
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(<String, dynamic>{
+          'contentId': widget.contentId,
+        }),
+      );
+      if (response.statusCode == 200) {
+        if (mounted) {
+          // Check if the widget is still mounted
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const ExpertNav()),
+            (route) => false,
+          );
+        }
+      } else {
+        setState(() {
+          errorMessage = 'Failed to signup: ${response.body}';
+        });
+      }
+    } catch (e) {
       setState(() {
-        _contentImage = bytes.buffer.asUint8List();
+        errorMessage = 'Failed to signup: $e';
       });
     }
   }
@@ -317,33 +391,76 @@ class _CreateContentState extends State<CreateContent> {
                 child: SizedBox(
                   width: double.infinity,
                   height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        if (_contentImage != null) {
-                          publish();
-                        } else {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Please upload a content image'),
-                              backgroundColor: Colors.red,
-                              duration: Duration(milliseconds: 400),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: AppColors.white,
+                              side: const BorderSide(
+                                color: AppColors.primaryColor,
+                                width: 1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                          );
-                        }
-                      }
-                    },
-                    child: Text(
-                      'Publish',
-                      style: TTtextStyles.subheadlineBold
-                          .copyWith(color: AppColors.white),
-                    ),
+                            onPressed: () {
+                              _deleteContent();
+                            },
+                            child: Text(
+                              'Delete',
+                              style: TTtextStyles.subheadlineBold
+                                  .copyWith(color: AppColors.primaryColor),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: SizedBox(
+                          height: 50,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              side: const BorderSide(
+                                color: AppColors.primaryColor,
+                                width: 1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                if (_contentImage != null) {
+                                  _updateContent();
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Please upload a content image'),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(milliseconds: 400),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            child: Text(
+                              'Update',
+                              style: TTtextStyles.subheadlineBold
+                                  .copyWith(color: AppColors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

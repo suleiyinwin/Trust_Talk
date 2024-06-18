@@ -1,9 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/pages/expertSide/expert_home.dart';
-
 
 class ExpertNav extends StatefulWidget {
   const ExpertNav({super.key});
@@ -13,7 +10,7 @@ class ExpertNav extends StatefulWidget {
 }
 
 class _ExpertNavState extends State<ExpertNav> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +38,23 @@ class _ExpertNavState extends State<ExpertNav> {
           destinations: const <NavigationDestination>[
             NavigationDestination(
               icon: Badge(
-                //change the value of the badge label to the number of unread messages
-                label: Text('2'),
-                child: Icon(Icons.question_answer_outlined)
-                ),
-              selectedIcon: Icon(Icons.question_answer, color: AppColors.primaryColor), 
-              label: "Chat",),
+                  //change the value of the badge label to the number of unread messages
+                  label: Text('2'),
+                  child: Icon(Icons.question_answer_outlined)),
+              selectedIcon:
+                  Icon(Icons.question_answer, color: AppColors.primaryColor),
+              label: "Chat",
+            ),
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home, color: AppColors.primaryColor), 
-              label: "Home",),
+              selectedIcon: Icon(Icons.home, color: AppColors.primaryColor),
+              label: "Home",
+            ),
             NavigationDestination(
-              icon: Icon(Icons.account_circle_outlined),
-              selectedIcon: Icon(Icons.account_circle, color: AppColors.primaryColor), 
-              label: "Profile"),
+                icon: Icon(Icons.account_circle_outlined),
+                selectedIcon:
+                    Icon(Icons.account_circle, color: AppColors.primaryColor),
+                label: "Profile"),
           ],
         ),
       ),
