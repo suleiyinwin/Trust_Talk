@@ -45,7 +45,7 @@ class _IndiChatState extends State<IndiChat> {
     if (_messageController.text.isNotEmpty) {
       final message = {
         'message': _messageController.text,
-        'chatId': widget.chat['_id'],
+        'chatId': widget.chat['chatId'],
         'senderId': widget.chat['members'][0],
         'receiverId': widget.chat['members'][1],
         'timestamp': DateTime.now().toIso8601String(),
@@ -95,7 +95,7 @@ class _IndiChatState extends State<IndiChat> {
   // Fetch messages from the backend (optional)
   Future<void> fetchMessages() async {
     try {
-      final response = await http.get(Uri.parse('$backendUrl/chat/messages/${widget.chat['_id']}'));
+      final response = await http.get(Uri.parse('$backendUrl/chat/messages/${widget.chat['chatId']}'));
       if (response.statusCode == 200) {
         final List<dynamic> messagesData = json.decode(response.body);
         setState(() {
