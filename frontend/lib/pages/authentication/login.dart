@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-          print(errorMessageforapi);
+        print(errorMessageforapi);
       });
     }
   }
@@ -102,7 +102,7 @@ class _LoginState extends State<Login> {
               SizedBox(
                 child: Text(
                   'Welcome!',
-                 style: TTtextStyles.title1Bold.copyWith(
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -208,12 +208,12 @@ class _LoginState extends State<Login> {
                         login();
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       'Login',
                       style: TTtextStyles.subheadlineBold.copyWith(
                         color: AppColors.white,
+                      ),
                     ),
-                  ),
                   ),
                 ),
               ),
@@ -221,10 +221,10 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text(
+                  Text(
                     'Don\'t you have an account?',
-                     style: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.textColor),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
@@ -234,10 +234,11 @@ class _LoginState extends State<Login> {
                         (route) => false,
                       );
                     },
-                    child:  Text(
+                    child: Text(
                       'Register now',
                       style: TTtextStyles.bodymediumBold.copyWith(
-                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        color: AppColors.primaryColor,
+                        decoration: TextDecoration.underline,
                         decorationColor: AppColors.primaryColor,
                       ),
                     ),
