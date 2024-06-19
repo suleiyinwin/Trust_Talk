@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/pages/userside/chatroom.dart';
+import 'package:frontend/pages/chat/chatroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
