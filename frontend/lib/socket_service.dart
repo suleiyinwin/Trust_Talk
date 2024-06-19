@@ -28,11 +28,11 @@ class SocketService {
     if (message.isNotEmpty) {
       logger.i('Sending message: $message');
       socket.emit('sendMessage', {
-        'message': message,
+        'content': message,
         'chatId': chatId,
-        'senderId': senderId,
-        'receiverId': receiverId,
-        'timestamp': DateTime.now().toIso8601String(),
+        'sender': senderId,
+        'receiver': receiverId,
+        'createdAt': DateTime.now().toIso8601String(),
       });
     } else {
       logger.w('Attempted to send an empty message');

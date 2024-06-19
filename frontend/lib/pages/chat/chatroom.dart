@@ -44,17 +44,17 @@ class _IndiChatState extends State<IndiChat> {
   void sendMessage() {
     if (_messageController.text.isNotEmpty) {
       final message = {
-        'message': _messageController.text,
+        'content': _messageController.text,
         'chatId': widget.chat['chatId'],
-        'senderId': widget.chat['members'][0],
-        'receiverId': widget.chat['members'][1],
-        'timestamp': DateTime.now().toIso8601String(),
+        'sender': widget.chat['members'][0],
+        'receiver': widget.chat['members'][1],
+        'createdAt': DateTime.now().toIso8601String(),
       };
       _socketService.sendMessage(
-        message['message'],
+        message['content'],
         message['chatId'],
-        message['senderId'],
-        message['receiverId'],
+        message['sender'],
+        message['receiver'],
       );
       setState(() {
         messages.add(message);
@@ -101,6 +101,7 @@ class _IndiChatState extends State<IndiChat> {
         setState(() {
           messages = messagesData.cast<Map<String, dynamic>>();
         });
+        print("Fetched messages: $messages");
       }
     } catch (error) {
       print('Failed to load messages: $error');
@@ -155,10 +156,11 @@ class _IndiChatState extends State<IndiChat> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                final isOwnMessage = message['senderId'] == widget.chat['members'][0];
+                final isOwnMessage = message['sender'] == widget.chat['members'][0];
+                print('Rendering message: $message');
                 return isOwnMessage
-                    ? OwnMsg(message: message['message'], time: message['timestamp'])
-                    : OtherMsg(message: message['message'], time: message['timestamp']);
+                    ? OwnMsg(message: message['content'], time: message['createdAt'])
+                    : OtherMsg(message: message['content'], time: message['createdAt']);
               },
             ),
             Align(

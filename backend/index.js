@@ -43,9 +43,9 @@ io.on('connection', (socket) => {
           const newMessage = new Message({
             msgId: new mongoose.Types.ObjectId(),
             chatId: data.chatId,
-            sender: data.senderId,
-            receiver: data.receiverId,
-            content: data.message,
+            sender: data.sender,
+            receiver: data.receiver,
+            content: data.content,
             read: false,
           });
     
