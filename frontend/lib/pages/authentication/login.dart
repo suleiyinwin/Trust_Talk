@@ -4,7 +4,6 @@ import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/pages/userside/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -46,17 +45,20 @@ class _LoginState extends State<Login> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final String token = responseBody['token'];
+        final String userId = responseBody['userId'];
 
         // Store the token using shared_preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+        await prefs.setString('userId', userId);
 
         // Navigate to the home page or another page
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const BottomNav()),
+            (route) => false,
           );
         }
       } else {
@@ -68,7 +70,7 @@ class _LoginState extends State<Login> {
     } catch (e) {
       setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-          print(errorMessageforapi);
+        print(errorMessageforapi);
       });
     }
   }
@@ -100,7 +102,7 @@ class _LoginState extends State<Login> {
               SizedBox(
                 child: Text(
                   'Welcome!',
-                 style: TTtextStyles.title1Bold.copyWith(
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -206,12 +208,12 @@ class _LoginState extends State<Login> {
                         login();
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       'Login',
                       style: TTtextStyles.subheadlineBold.copyWith(
                         color: AppColors.white,
+                      ),
                     ),
-                  ),
                   ),
                 ),
               ),
@@ -219,22 +221,24 @@ class _LoginState extends State<Login> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text(
+                  Text(
                     'Don\'t you have an account?',
-                     style: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.textColor),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const Signup()),
+                        (route) => false,
                       );
                     },
-                    child:  Text(
+                    child: Text(
                       'Register now',
                       style: TTtextStyles.bodymediumBold.copyWith(
-                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        color: AppColors.primaryColor,
+                        decoration: TextDecoration.underline,
                         decorationColor: AppColors.primaryColor,
                       ),
                     ),

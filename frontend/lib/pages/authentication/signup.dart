@@ -53,9 +53,10 @@ class _SignupState extends State<Signup> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const Login()),
+            (Route<dynamic> route) => false,
           );
         }
       } else {
@@ -293,11 +294,11 @@ class _SignupState extends State<Signup> {
                         signUp();
                       }
                     },
-                    child:  Text(
+                    child: Text(
                       'Register',
-                     style: TTtextStyles.subheadlineBold.copyWith(
+                      style: TTtextStyles.subheadlineBold.copyWith(
                         color: AppColors.white,
-                    ),
+                      ),
                     ),
                   ),
                 ),
@@ -306,22 +307,24 @@ class _SignupState extends State<Signup> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text(
+                  Text(
                     'Already have an account?',
-                    style: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.textColor),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const Login()),
+                        (Route<dynamic> route) => false,
                       );
                     },
-                    child:  Text(
+                    child: Text(
                       'Login',
                       style: TTtextStyles.bodymediumBold.copyWith(
-                        color: AppColors.primaryColor,decoration: TextDecoration.underline,
+                        color: AppColors.primaryColor,
+                        decoration: TextDecoration.underline,
                         decorationColor: AppColors.primaryColor,
                       ),
                     ),

@@ -18,11 +18,11 @@ const expertlogin = async (req, res) => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         // console.log('User logged in:', userCredential.user);
         const idToken = await userCredential.user.getIdToken();
-
+        // console.log(idToken);
         // Verify the ID token using Firebase Admin SDK
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         if (decodedToken) {
-            res.status(200).json({ token: idToken });
+            res.status(200).json({ token: idToken, expertId: expert.expertId });
         } else {
             res.status(401).json({ error: 'Invalid credentials' });
         }
