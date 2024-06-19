@@ -51,8 +51,11 @@ io.on('connection', (socket) => {
     
           await newMessage.save();
     
-          // Emit the message to all connected clients (including the sender)
-          io.emit('message', newMessage);
+        // Emit the message to all connected clients (including the sender)
+        // io.emit('message', newMessage);
+
+          // Emit the message to only targeted receiver
+          io.to(data.receiverId).emit('recieve message', newMessage);
           console.log('Message sent:', newMessage['content']);
         } catch (error) {
           console.error('Error saving message to MongoDB:', error);

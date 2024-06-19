@@ -25,22 +25,40 @@ class _IndiChatState extends State<IndiChat> {
   final String? backendUrl = dotenv.env['BACKEND_URL'];
   Map<String, dynamic>? expertInfo;
   bool isLoading = true;
+  List<Map<String, dynamic>> messages = [];
 
   @override
   void initState(){
     super.initState();
-    _socketService.initializeSocket(widget.chat['chatId']);
+    _socketService.initializeSocket(widget.chat['chatId'], onMessageReceived);
     fetchAndSetExpertInfo();
+    fetchMessages();
+  }
+
+  void onMessageReceived(message) {
+    setState(() {
+      messages.add(message);
+    });
   }
 
   void sendMessage() {
     if (_messageController.text.isNotEmpty) {
+      final message = {
+        'message': _messageController.text,
+        'chatId': widget.chat['_id'],
+        'senderId': widget.chat['members'][0],
+        'receiverId': widget.chat['members'][1],
+        'timestamp': DateTime.now().toIso8601String(),
+      };
       _socketService.sendMessage(
-        _messageController.text,
-        widget.chat['_id'],
-        widget.chat['members'][0],
-        widget.chat['members'][1],
+        message['message'],
+        message['chatId'],
+        message['senderId'],
+        message['receiverId'],
       );
+      setState(() {
+        messages.add(message);
+      });
       _messageController.clear();
     }
   }
@@ -71,6 +89,21 @@ class _IndiChatState extends State<IndiChat> {
       return json.decode(response.body);
     } else {
       throw Exception('Failed to load expert information');
+    }
+  }
+
+  // Fetch messages from the backend (optional)
+  Future<void> fetchMessages() async {
+    try {
+      final response = await http.get(Uri.parse('$backendUrl/chat/messages/${widget.chat['_id']}'));
+      if (response.statusCode == 200) {
+        final List<dynamic> messagesData = json.decode(response.body);
+        setState(() {
+          messages = messagesData.cast<Map<String, dynamic>>();
+        });
+      }
+    } catch (error) {
+      print('Failed to load messages: $error');
     }
   }
 
@@ -118,11 +151,15 @@ class _IndiChatState extends State<IndiChat> {
         width: MediaQuery.of(context).size.width,
         child: Stack(
           children: [
-            ListView(
-              children: const [
-                // OwnMsg(),
-                OtherMsg(),
-              ],
+            ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                final isOwnMessage = message['senderId'] == widget.chat['members'][0];
+                return isOwnMessage
+                    ? OwnMsg(message: message['message'], time: message['timestamp'])
+                    : OtherMsg(message: message['message'], time: message['timestamp']);
+              },
             ),
             Align(
               alignment: Alignment.bottomCenter,

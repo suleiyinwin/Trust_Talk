@@ -7,7 +7,7 @@ class SocketService {
   final Logger logger = Logger();
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
-  void initializeSocket(String chatId) {
+  void initializeSocket(String chatId, Function onMessageReceived) {
     logger.i('Initializing socket connection...');
     socket = IO.io(backendUrl, <String, dynamic>{
       'transports': ['websocket'],
@@ -17,9 +17,10 @@ class SocketService {
     socket.connect();
     socket.emit("createRoom", chatId);
 
-    // Optionally handle incoming messages
-    socket.on('message', (data) {
-      logger.d('Received message: $data');
+    //handle incoming messages
+    socket.on('recieve message', (message) {
+      logger.d('Received message: $message');
+      onMessageReceived(message);
     });
   }
 

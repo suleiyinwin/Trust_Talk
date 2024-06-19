@@ -3,7 +3,13 @@ import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 
 class OtherMsg extends StatelessWidget {
-  const OtherMsg({super.key});
+  final String message;
+  final String time;
+
+  const OtherMsg({
+    required this.message,
+    required this.time,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +38,10 @@ class OtherMsg extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
-                child: Text('Hello',     style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)),
+                child: Text(message,     style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)),
               ),
             ),
-            const Text('1:04 PM', style: TTtextStyles.bodysmallRegular),
+            Text(time, style: TTtextStyles.bodysmallRegular),
           ],
         )
       ),
