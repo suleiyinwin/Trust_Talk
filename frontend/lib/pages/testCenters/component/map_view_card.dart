@@ -96,9 +96,18 @@ class MapViewCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 10),
-                if (!isOpen)
+                if (!isOpen &&
+                    nextOpenHours.isNotEmpty &&
+                    nextOpenHours != 'No hours available')
                   Text(
                     'Opens $nextOpenHours',
+                    style: TTtextStyles.bodymediumRegular.copyWith(
+                      color: AppColors.disableColor,
+                    ),
+                  ),
+                if (!isOpen && nextOpenHours == 'No hours available')
+                  Text(
+                    nextOpenHours,
                     style: TTtextStyles.bodymediumRegular.copyWith(
                       color: AppColors.disableColor,
                     ),

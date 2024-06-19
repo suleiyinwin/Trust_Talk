@@ -121,41 +121,40 @@ class _MapViewState extends State<MapView> {
   }
 
   Future<List> fetchNearbyPlacesFromBackend(double lat, double lng, String type, String keyword) async {
-  if (backendUrl == null) {
-    throw Exception('Backend URL is not set');
-  }
+    if (backendUrl == null) {
+      throw Exception('Backend URL is not set');
+    }
 
-  final String url = '$backendUrl/map/getNearbyPlaces';
+    final String url = '$backendUrl/map/getNearbyPlaces';
 
-  try {
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: json.encode({
-        'latitude': lat,
-        'longitude': lng,
-        'type': type,
-        'keyword': keyword,
-      }),
-    );
-    
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data == null) {
-        throw Exception('Null response data');
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          'latitude': lat,
+          'longitude': lng,
+          'type': type,
+          'keyword': keyword,
+        }),
+      );
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data == null) {
+          throw Exception('Null response data');
+        }
+        return data;
+      } else {
+        throw Exception('Failed to load places from backend');
       }
-      return data;
-    } else {
+    } catch (e) {
+      print('Error fetching places from backend: $e');
       throw Exception('Failed to load places from backend');
     }
-  } catch (e) {
-    print('Error fetching places from backend: $e');
-    throw Exception('Failed to load places from backend');
   }
-}
-
 
   String _calculateDistance(
       double lat1, double lon1, double lat2, double lon2) {
@@ -163,18 +162,20 @@ class _MapViewState extends State<MapView> {
         1000; // distance in km
     return '${distance.toStringAsFixed(1)} km';
   }
-  bool _isOpen(Map? openingHours){
-    if(openingHours == null) return false;
-    DateTime now = DateTime.now();
-    // Google API: Sunday = 0, Dart: Monday = 1
-    int day = now.weekday % 7;
-    String nowStr= now.hour.toString().padLeft(2,'0') + now.minute.toString().padLeft(2,'0');
 
-    for(var period in openingHours['periods']){
-      if(period['open']['day'] == day){
+  bool _isOpen(Map? openingHours) {
+    if (openingHours == null) return false;
+    if (openingHours['open_now'] == true) return true;
+
+    DateTime now = DateTime.now();
+    int day = now.weekday % 7;
+    String nowStr = now.hour.toString().padLeft(2, '0') + now.minute.toString().padLeft(2, '0');
+
+    for (var period in openingHours['periods']) {
+      if (period['open']['day'] == day) {
         String openTime = period['open']['time'];
         String closeTime = period['close']['time'];
-        if (nowStr.compareTo(openTime)>=0 && nowStr.compareTo(closeTime)<=0){
+        if (nowStr.compareTo(openTime) >= 0 && nowStr.compareTo(closeTime) <= 0) {
           return true;
         }
       }
@@ -182,17 +183,19 @@ class _MapViewState extends State<MapView> {
     return false;
   }
 
-  String _nextOpenHours(Map? openingHours){
+  String _nextOpenHours(Map? openingHours) {
     if (openingHours == null) return 'No hours available';
+    if (openingHours['open_now'] == true) return 'Open 24 hours';
+
     DateTime now = DateTime.now();
     int day = now.weekday % 7;
 
-    for(int i=0; i<7; i++){
-      int nextDay = (day + i) %7;
-      for (var period in openingHours ['periods']){
-        if(period['open']['day']== nextDay){
+    for (int i = 0; i < 7; i++) {
+      int nextDay = (day + i) % 7;
+      for (var period in openingHours['periods']) {
+        if (period['open']['day'] == nextDay) {
           String openTime = period['open']['time'];
-          String formattedTime = '${openTime.substring(0,2)}:${openTime.substring(2)}';
+          String formattedTime = '${openTime.substring(0, 2)}:${openTime.substring(2)}';
           String dayStr = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][nextDay];
           return '$formattedTime $dayStr';
         }
@@ -200,6 +203,7 @@ class _MapViewState extends State<MapView> {
     }
     return 'No upcoming open hours';
   }
+
   void _updateType(String type, String keyword) {
     setState(() {
       _selectedType = type;
@@ -248,14 +252,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 class MapViewBody extends StatelessWidget {
   final TextEditingController searchController;
   final VoidCallback searchAndDisplay;
- final Function(String, String) updateType;
+  final Function(String, String) updateType;
   final List places;
   final String Function(double, double, double, double) calculateDistance;
   final bool Function(Map?) isOpen;
   final String Function(Map?) nextOpenHours;
   final double userLat;
   final double userLng;
-
 
   const MapViewBody({
     super.key,
@@ -416,7 +419,7 @@ class _ButtonRowState extends State<ButtonRow> {
             setState(() {
               isClinicsSelected = false;
             });
-            widget.onTypeChange('health','STI test centers');
+            widget.onTypeChange('health', 'STI test centers');
           },
         ),
       ],
@@ -443,7 +446,7 @@ class CustomButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 13.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.primaryColor : AppColors.secondaryColor,
           borderRadius: BorderRadius.circular(30.0),
