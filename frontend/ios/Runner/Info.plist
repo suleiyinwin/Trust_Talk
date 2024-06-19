@@ -51,5 +51,12 @@
     <string>This app needs access to your photo library to select photos.</string>
     <key>NSPhotoLibraryAddUsageDescription</key>
     <string>This app needs access to your photo library to save photos.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to your location to show nearby places.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to your location to show nearby places.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs access to your location to show nearby places.</string>
+
 </dict>
 </plist>
