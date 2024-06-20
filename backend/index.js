@@ -46,6 +46,7 @@ io.on('connection', (socket) => {
             sender: data.sender,
             receiver: data.receiver,
             content: data.content,
+            createdAt: data.createdAt,
             read: false,
           });
     

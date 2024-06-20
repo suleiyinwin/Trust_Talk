@@ -24,7 +24,7 @@ class SocketService {
     });
   }
 
-  void sendMessage(String message, String chatId, String senderId, String receiverId) {
+  void sendMessage(String message, String chatId, String senderId, String receiverId, String createdAt) {
     if (message.isNotEmpty) {
       logger.i('Sending message: $message');
       socket.emit('sendMessage', {
@@ -32,7 +32,7 @@ class SocketService {
         'chatId': chatId,
         'sender': senderId,
         'receiver': receiverId,
-        'createdAt': DateTime.now().toIso8601String(),
+        'createdAt': createdAt,
       });
     } else {
       logger.w('Attempted to send an empty message');

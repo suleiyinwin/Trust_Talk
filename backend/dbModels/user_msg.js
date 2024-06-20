@@ -6,13 +6,13 @@ const messageSchema = new mongoose.Schema({
     sender: { type: String, required: true, trim: true },
     receiver: { type: String, required: true, trim: true },
     content: { type: String, required: true, trim: true},
+    createdAt: { type: String, required: true},
     read: { type: Boolean, required: true, default: false },
     readBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'experts',
     },
     },
-    { timestamps: true }
 );
 
 const Message = mongoose.model('messages', messageSchema);

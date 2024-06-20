@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/date_time_utils.dart';
 import 'package:frontend/pages/chat/other_msg.dart';
 import 'package:frontend/pages/chat/own_msg.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -55,6 +56,7 @@ class _IndiChatState extends State<IndiChat> {
         message['chatId'],
         message['sender'],
         message['receiver'],
+        message['createdAt'],
       );
       setState(() {
         messages.add(message);
@@ -101,7 +103,7 @@ class _IndiChatState extends State<IndiChat> {
         setState(() {
           messages = messagesData.cast<Map<String, dynamic>>();
         });
-        print("Fetched messages: $messages");
+        // print("Fetched messages: $messages");
       }
     } catch (error) {
       print('Failed to load messages: $error');
@@ -159,8 +161,8 @@ class _IndiChatState extends State<IndiChat> {
                 final isOwnMessage = message['sender'] == widget.chat['members'][0];
                 print('Rendering message: $message');
                 return isOwnMessage
-                    ? OwnMsg(message: message['content'], time: message['createdAt'])
-                    : OtherMsg(message: message['content'], time: message['createdAt']);
+                    ? OwnMsg(message: message['content'], time: formatTime(message['createdAt']))
+                    : OtherMsg(message: message['content'], time: formatTime(message['createdAt']));
               },
             ),
             Align(
