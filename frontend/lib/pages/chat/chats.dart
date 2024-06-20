@@ -94,7 +94,6 @@ class _ChatPageState extends State<ChatPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                print(snapshot.data![index]);
                 return ChatCard(
                   chat: snapshot.data![index],
                   expertInfo: chatsWithInfo[index],
@@ -124,7 +123,7 @@ class ChatCard extends StatelessWidget {
         context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
         ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(5.0),
         child: ListTile(
           leading: CircleAvatar(
             radius: 30,

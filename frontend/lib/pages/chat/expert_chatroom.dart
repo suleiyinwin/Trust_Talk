@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/date_time_utils.dart';
@@ -151,25 +153,27 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Stack(
+        child: Column(
           children: [
-            ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final message = messages[index];
-                final isOwnMessage = message['sender'] == widget.chat['members'][1];
-                print('Rendering message: $message');
-                return isOwnMessage
-                    ? OwnMsg(message: message['content'], time: formatTime(message['createdAt']))
-                    : OtherMsg(message: message['content'], time: formatTime(message['createdAt']));
-              },
+            Expanded(
+              child: ListView.builder(
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final message = messages[index];
+                  final isOwnMessage = message['sender'] == widget.chat['members'][1];
+                  return isOwnMessage
+                      ? OwnMsg(message: message['content'], time: formatTime(message['createdAt']))
+                      : OtherMsg(message: message['content'], time: formatTime(message['createdAt']));
+                },
+              ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+              // alignment: Alignment.bottomCenter,
               child: Row(
                 children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.9,
+                  Expanded(
+                    // width: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
                       margin: const EdgeInsets.only(left: 5, right: 2, bottom: 8),
                       color: AppColors.backgroundGrey,
