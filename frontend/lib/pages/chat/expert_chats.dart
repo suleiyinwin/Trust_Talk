@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'package:frontend/pages/chat/expert_chatroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
-import 'package:frontend/pages/chat/chatroom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatsPage extends StatefulWidget {
@@ -119,7 +119,7 @@ class ChatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => Navigator.push(
-        context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
+        context, MaterialPageRoute(builder: (context) => IndiExpertChat(chat: chat))
         ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
