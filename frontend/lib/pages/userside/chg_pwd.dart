@@ -23,8 +23,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _confirmNewPasswordVisible = true;
   String _errorMessage = '';
   String _currentPasswordError = '';
-  bool newPasswordError = false;
-  String newPasswordErrorText = '';
   final passwordRegex = RegExp(
       r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,}$");
 
@@ -39,10 +37,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
   Future<void> _changePassword() async {
-    setState(() {
-      _errorMessage = '';
-      _currentPasswordError = '';
-    });
+    if (_newPasswordController.text != _confirmNewPasswordController.text) {
+      setState(() {
+        _errorMessage = 'New Password and Confirm New Password do not match.';
+      });
+      return;
+    }
 
     final prefs = await SharedPreferences.getInstance();
     final idToken = prefs.getString('token');
@@ -64,6 +64,10 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           'newPassword': _newPasswordController.text,
         }),
       );
+
+      // Log the response for debugging
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         Navigator.pop(context);
@@ -127,7 +131,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           }
                           return null;
                         },
-                        
                       ),
                       const SizedBox(height: 20),
                       TextFieldWithTitle(
@@ -140,30 +143,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           });
                         },
                         validator: (value) {
-                          setState(() {
-                            newPasswordError = false;
-                            newPasswordErrorText = '';
-                          });
                           if (value == null || value.isEmpty) {
-                            setState(() {
-                              newPasswordError = true;
-                              newPasswordErrorText = 'Please Enter a password';
-                            });
-                            return newPasswordErrorText;
+                            return 'Please Enter a password';
                           } else if (!passwordRegex.hasMatch(value)) {
-                            setState(() {
-                              newPasswordError = true;
-                              newPasswordErrorText = 'Password must contain at least 6 characters, including:\n'
-                                  '• Uppercase\n'
-                                  '• Lowercase\n'
-                                  '• Numbers and special characters';
-                            });
-                            return newPasswordErrorText;
+                            return 'Password must contain at least 6 characters, including:\n'
+                                '• Uppercase\n'
+                                '• Lowercase\n'
+                                '• Numbers and special characters';
                           }
                           return null;
                         },
-                       
-                        helperText: !newPasswordError
+                        helperText: (_newPasswordController.text.isEmpty ||
+                                passwordRegex.hasMatch(_newPasswordController.text))
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -207,7 +198,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           Padding(
             padding: const EdgeInsets.only(bottom: 40.0),
             child: SizedBox(
-              width: 280,
+               width: 280,
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -246,7 +237,7 @@ class TextFieldWithTitle extends StatelessWidget {
   final FormFieldValidator<String>? validator;
 
   const TextFieldWithTitle({
-    super.key,
+    Key? key,
     required this.title,
     required this.controller,
     required this.obscureText,
@@ -254,7 +245,7 @@ class TextFieldWithTitle extends StatelessWidget {
     this.errorText,
     this.helperText,
     this.validator,
-  }) ;
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -273,7 +264,7 @@ class TextFieldWithTitle extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 8.0),
+            contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 10.0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -288,14 +279,14 @@ class TextFieldWithTitle extends StatelessWidget {
               onPressed: onToggleVisibility,
             ),
             errorText: errorText,
-             errorMaxLines: 5,
+            helperText: null,
           ),
           validator: validator,
         ),
         if (helperText != null && (errorText == null || errorText!.isEmpty))
           Padding(
             padding: const EdgeInsets.only(top: 6),
-            child: helperText!,
+            child: helperText,
           ),
       ],
     );

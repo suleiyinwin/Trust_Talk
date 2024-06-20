@@ -10,6 +10,7 @@ class MapViewCard extends StatelessWidget {
   final String description;
   final bool isOpen;
   final String nextOpenHours;
+  final String review;
 
   const MapViewCard({
     required this.title,
@@ -19,6 +20,7 @@ class MapViewCard extends StatelessWidget {
     required this.description,
     required this.isOpen,
     required this.nextOpenHours,
+    required this.review,
     super.key,
   });
 
@@ -115,6 +117,26 @@ class MapViewCard extends StatelessWidget {
             const SizedBox(
               height: 5,
             ),
+            Row(
+              children: [
+                const Icon(
+                  Icons.account_circle,
+                  color: AppColors.disableColor,
+                ),
+                const SizedBox(
+                  width: 5,
+                ),
+                Expanded(
+                    child: Text(
+                  review,
+                  style: TTtextStyles.bodymediumRegular.copyWith(
+                    color: AppColors.disableColor,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ))
+              ],
+            )
           ],
         ),
       ),

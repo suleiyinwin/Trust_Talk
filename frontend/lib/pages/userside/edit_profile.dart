@@ -217,11 +217,11 @@ class ProfileImage extends StatelessWidget {
   final VoidCallback onSelectProfilePhoto;
 
   const ProfileImage({
+    Key? key,
     required this.profileImageBytes,
     required this.profilePhotoUrl,
     required this.onSelectProfilePhoto,
-    super.key,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -300,12 +300,12 @@ class TextFieldWithTitle extends StatelessWidget {
   final String errorText;
 
   const TextFieldWithTitle({
+    Key? key,
     required this.title,
     required this.controller,
     this.enabled = true,
     this.errorText = '',
-    super.key,
-  }) ;
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -335,11 +335,7 @@ class TextFieldWithTitle extends StatelessWidget {
               fillColor: AppColors.backgroundGrey,
               filled: true,
               errorText: errorText.isEmpty ? null : errorText,
-             errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Colors.red),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
+              errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.red),
               ),

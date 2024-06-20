@@ -309,8 +309,8 @@ class ProfileHeader extends StatelessWidget {
   const ProfileHeader({
     required this.profilePhotoUrl,
     required this.username,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -346,8 +346,8 @@ class ProfilePhoto extends StatelessWidget {
   final String profilePhotoUrl;
   const ProfilePhoto({
     required this.profilePhotoUrl,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -382,8 +382,8 @@ class ProfileInfo extends StatelessWidget {
 
   const ProfileInfo({
     required this.username,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +430,8 @@ class SettingsSection extends StatelessWidget {
   const SettingsSection(
       {required this.signOutCallback,
       required this.deleteAccountCallback,
-      super.key});
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -473,8 +474,8 @@ class SettingsRow extends StatelessWidget {
   const SettingsRow({
     required this.text,
     required this.onTap,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

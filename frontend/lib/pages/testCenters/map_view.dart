@@ -67,14 +67,19 @@ class _MapViewState extends State<MapView> {
     }
 
     try {
+      print('Searching for address: $address');
       List<Map<String, dynamic>> locations =
           await _getGeocodingResults(address);
+      print('Geocoding result: $locations');
 
       if (locations.isEmpty) {
         throw Exception('No locations found for the address.');
       }
 
       var location = locations.first;
+      print(
+          'Location found: Latitude: ${location['lat']}, Longitude: ${location['lng']}');
+
       List places = await fetchNearbyPlacesFromBackend(
           location['lat'], location['lng'], _selectedType, _selectedKeyword);
       setState(() {
@@ -307,6 +312,10 @@ class MapViewBody extends StatelessWidget {
                   description: place['vicinity'] ?? 'No address available',
                   isOpen: isOpen(place['opening_hours']),
                   nextOpenHours: nextOpenHours(place['opening_hours']),
+                  review:
+                      place['reviews'] != null && place['reviews'].isNotEmpty
+                          ? place['reviews'][0]['text']
+                          : 'No reviews available',
                 );
               },
             ),
