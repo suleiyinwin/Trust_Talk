@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/pages/chat/expert_chats.dart';
 import 'package:frontend/pages/expertSide/expert_home.dart';
 
 class ExpertNav extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ExpertNavState extends State<ExpertNav> {
         child: IndexedStack(
           index: _selectedIndex,
           children: const <Widget>[
-            Placeholder(),
+            ChatsPage(),
             ExpertHome(),
             Placeholder(),
           ],
