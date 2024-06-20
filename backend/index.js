@@ -35,7 +35,8 @@ io.on('connection', (socket) => {
     console.log('New client connected');
 
     socket.on('createRoom', (chatId) => {
-        console.log('createRoom', chatId);
+      socket.join(chatId);
+      console.log(`Socket ${socket.id} joined room ${chatId}`);
     });
 
     socket.on('sendMessage', async (data) => {
@@ -56,7 +57,7 @@ io.on('connection', (socket) => {
         // io.emit('message', newMessage);
 
           // Emit the message to only targeted receiver
-          io.to(data.receiver).emit('recieve message', newMessage);
+          io.to(data.chatId).emit('recieve message', newMessage);
           console.log('Message sent:', newMessage['content']);
         } catch (error) {
           console.error('Error saving message to MongoDB:', error);

@@ -58,9 +58,9 @@ class _IndiChatState extends State<IndiChat> {
         message['receiver'],
         message['createdAt'],
       );
-      setState(() {
-        messages.add(message);
-      });
+      // setState(() {
+      //   messages.add(message);
+      // });
       _messageController.clear();
     }
   }
