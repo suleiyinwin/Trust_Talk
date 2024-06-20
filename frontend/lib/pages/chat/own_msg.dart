@@ -19,26 +19,29 @@ class OwnMsg extends StatelessWidget {
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.8,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(time, style: TTtextStyles.bodysmallRegular),
-            Card(
-              margin: const EdgeInsets.only(left: 5, right: 3),
-              color: AppColors.primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Text(
-                  message,
-                  style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)
+        child: Padding(
+          padding: const EdgeInsets.only(right: 5.0, bottom: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(time, style: TTtextStyles.bodysmallRegular),
+              Card(
+                margin: const EdgeInsets.only(left: 5, right: 3),
+                color: AppColors.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    message,
+                    style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         )
       ),
     );
