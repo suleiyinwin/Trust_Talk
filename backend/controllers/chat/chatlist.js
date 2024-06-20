@@ -14,7 +14,7 @@ const chatlist = async (req, res) => {
         const decodedToken = await admin.auth().verifyIdToken(idToken);
         const userId = decodedToken.uid;
 
-        const chats = await Chat.find({ members : userId });
+        const chats = await Chat.find({ members : userId }).populate('lastMessage');
         res.status(200).json(chats);
     } catch (error) {
         console.error('Error fetching chats:', error.message);

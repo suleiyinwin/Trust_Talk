@@ -11,6 +11,7 @@ import mapRouter from './routers/mapRouter.js';
 import userRouter from './routers/userRouter.js';
 import mongoose from 'mongoose';
 import Message from './dbModels/user_msg.js';
+import Chat from './dbModels/chat.js';
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
@@ -52,6 +53,13 @@ io.on('connection', (socket) => {
           });
     
           await newMessage.save();
+
+          // Update the chat document with the ID of the new message
+          await Chat.findOneAndUpdate(
+            { chatId: data.chatId },
+            { lastMessage: newMessage._id },
+            { new: true }
+          );
     
         // Emit the message to all connected clients (including the sender)
         // io.emit('message', newMessage);

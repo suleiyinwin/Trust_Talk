@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:frontend/date_time_utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -93,6 +94,7 @@ class _ChatPageState extends State<ChatPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
+                print(snapshot.data![index]);
                 return ChatCard(
                   chat: snapshot.data![index],
                   expertInfo: chatsWithInfo[index],
@@ -131,8 +133,11 @@ class ChatCard extends StatelessWidget {
                 : const AssetImage('images/logo.png') as ImageProvider,
           ),
           title: Text(expertInfo['name'] ?? 'Expert', style: TTtextStyles.bodylargeBold),
-          subtitle: Text(chat['lastMessage'] ?? ''),
-          trailing: const Text('18:04') ,
+          subtitle: Text(chat['lastMessage']?['content'] ?? ''),
+          trailing: Text(
+            chat['lastMessage']?['createdAt'] != null
+                ? formatTime(chat['lastMessage']!['createdAt'])
+                : ''),
         ),
       ),
     );
