@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
@@ -44,7 +46,6 @@ class _CreatePreviewState extends State<CreatePreview> {
           expertProfile = responseBody['expertProfile'];
           expertName = responseBody['expertName'];
         });
-        print(expertName);
       } else {
         print('Failed with status code: ${response.statusCode}');
       }
@@ -72,6 +73,12 @@ class _CreatePreviewState extends State<CreatePreview> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+             Text('Welcome back,',
+                  style: TTtextStyles.bodylargeRegular
+                      .copyWith(color: AppColors.disableColor)),
+              const SizedBox(
+                height: 5,
+              ),
             Text(
               expertName,
               style: TTtextStyles.bodytext2Bold,

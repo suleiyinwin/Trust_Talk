@@ -12,7 +12,7 @@ class BottomNav extends StatefulWidget {
 }
 
 class _BottomNavState extends State<BottomNav> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -70,8 +70,8 @@ class _BottomNavState extends State<BottomNav> {
         child: IndexedStack(
           index: _selectedIndex,
           children: const <Widget>[
-            // ChatPage(),
-            // ExpertsPage(),
+            Placeholder(),
+            Placeholder(),
             Home(),
             MapView(),
             userDetail(),
