@@ -10,7 +10,7 @@ import eduRouter from './routers/eduRouter.js';
 import mapRouter from './routers/mapRouter.js';
 import userRouter from './routers/userRouter.js';
 import mongoose from 'mongoose';
-import Message from './dbModels/user_msg.js';
+import Message from './dbModels/message.js';
 import Chat from './dbModels/chat.js';
 
 const app = express();

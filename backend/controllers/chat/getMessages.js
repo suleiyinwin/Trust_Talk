@@ -1,4 +1,4 @@
-import Message from '../../dbModels/user_msg.js';
+import Message from '../../dbModels/message.js';
 
 const getMessages = async (req, res) => {
     try {

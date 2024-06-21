@@ -8,10 +8,6 @@ const messageSchema = new mongoose.Schema({
     content: { type: String, required: true, trim: true},
     createdAt: { type: String, required: true},
     read: { type: Boolean, required: true, default: false },
-    readBy: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'experts',
-    },
     },
 );
 
