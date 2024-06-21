@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/pages/chat/expert_chats.dart';
 import 'package:frontend/pages/expertSide/expert_home.dart';
+import 'package:frontend/pages/expertSide/expert_profile.dart';
 
 class ExpertNav extends StatefulWidget {
   const ExpertNav({super.key});
@@ -66,7 +67,7 @@ class _ExpertNavState extends State<ExpertNav> {
           children: const <Widget>[
             ChatsPage(),
             ExpertHome(),
-            Placeholder(),
+            ExpertProfile(),
           ],
         ),
       ),

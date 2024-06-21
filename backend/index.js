@@ -9,6 +9,7 @@ import chatRouter from './routers/chatRouter.js';
 import eduRouter from './routers/eduRouter.js';
 import mapRouter from './routers/mapRouter.js';
 import userRouter from './routers/userRouter.js';
+import expertRouter from './routers/expertRouter.js';
 import mongoose from 'mongoose';
 import Message from './dbModels/message.js';
 import Chat from './dbModels/chat.js';
@@ -30,6 +31,7 @@ app.use('/chat', chatRouter);
 app.use('/edu', eduRouter);
 app.use('/map', mapRouter);
 app.use('/user', userRouter);
+app.use('/expert', expertRouter);
 
 // Socket.io connection
 io.on('connection', (socket) => {
