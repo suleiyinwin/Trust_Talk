@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:frontend/date_time_utils.dart';
 import 'package:frontend/pages/chat/expert_chatroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -131,8 +132,11 @@ class ChatCard extends StatelessWidget {
                 : const AssetImage('images/logo.png') as ImageProvider,
           ),
           title: Text(userInfo['username'] ?? 'User', style: TTtextStyles.bodylargeBold),
-          subtitle: Text(chat['lastMessage'] ?? ''),
-          trailing: const Text('18:04') ,
+          subtitle: Text(chat['lastMessage']?['content'] ?? '',),
+          trailing: Text(
+            chat['lastMessage']?['createdAt'] != null
+                ? formatTime(chat['lastMessage']!['createdAt'])
+                : '',),
         ),
       ),
     );
