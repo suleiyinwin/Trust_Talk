@@ -25,7 +25,9 @@ class OwnMsg extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(time, style: TTtextStyles.bodysmallRegular),
+              Text(time, style: TTtextStyles.bodysmallRegular.copyWith(
+                              color: AppColors.textColor.withOpacity(0.5),
+              ),),
               Card(
                 margin: const EdgeInsets.only(left: 5, right: 3),
                 color: AppColors.primaryColor,

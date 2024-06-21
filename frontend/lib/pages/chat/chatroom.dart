@@ -168,10 +168,13 @@ class _IndiChatState extends State<IndiChat> {
                   if (isNewDay) {
                     messageWidgets.add(
                       Padding(
-                        padding: const EdgeInsets.all(3.0),
+                        padding: const EdgeInsets.all(8.0),
                         child: Center(
                           child: Text(
                             formatDateTime(message['createdAt']),
+                            style: TTtextStyles.bodysmallRegular.copyWith(
+                              color: AppColors.textColor.withOpacity(0.5),
+                            ),
                           ),
                         ),
                       ),

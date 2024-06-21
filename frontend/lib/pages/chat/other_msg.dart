@@ -40,10 +40,17 @@ class OtherMsg extends StatelessWidget {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
-                  child: Text(message,     style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.textColor)),
+                  child: Text(
+                    message,
+                    style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.textColor)),
                 ),
               ),
-              Text(time, style: TTtextStyles.bodysmallRegular),
+              Text(
+                time, 
+                style: TTtextStyles.bodysmallRegular.copyWith(
+                  color: AppColors.textColor.withOpacity(0.5),
+                ),
+              ),
             ],
           ),
         )
