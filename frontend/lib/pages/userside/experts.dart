@@ -13,36 +13,15 @@ class ExpertsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3, 
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
           shape: const Border(
             bottom: BorderSide(color: AppColors.backgroundGrey, width: 1.0)),
           backgroundColor: AppColors.backgroundColor,
           title: const Text('Health Experts', style: TTtextStyles.subtitleBold),
-          bottom: TabBar(
-            indicatorColor: AppColors.primaryColor,
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelStyle: TTtextStyles.subheadlineRegular.copyWith(
-              color: AppColors.primaryColor,
-            ),
-            tabs: const <Widget>[
-              Tab(text: 'All'),
-              Tab(text: 'Active'),
-              Tab(text: 'Inactive'),
-            ],
-          ),
         ),
         backgroundColor: AppColors.backgroundColor,
-        body: const TabBarView(
-          children: <Widget>[
-            AllExperts(),
-            Center(child: Text('Online experts')),
-            Center(child: Text('Offline experts')),
-          ],
-        ),
-      ),
+        body: const AllExperts(),
     );
   }
 }
@@ -53,12 +32,14 @@ class Expert {
   final String name;
   final String specialty;
   final String profileUrl;
+  final bool isActive;
 
   Expert({
     required this.expertId,
     required this.name,
     required this.specialty,
     required this.profileUrl,
+    required this.isActive,
   });
 
   factory Expert.fromJson(Map<String, dynamic> json) {
@@ -67,6 +48,7 @@ class Expert {
       name: json['name'],
       specialty: json['specility'],
       profileUrl: json['profileurl'],
+      isActive: json['isActive'],
     );
   }
 }
@@ -150,6 +132,7 @@ class _AllExpertsState extends State<AllExperts> {
                   name: snapshot.data![index].name,
                   specialty: snapshot.data![index].specialty,
                   profileUrl: snapshot.data![index].profileUrl,
+                  isActive: snapshot.data![index].isActive,
                   onPressed: () => _createChat(snapshot.data![index].expertId),
                 );
               },
