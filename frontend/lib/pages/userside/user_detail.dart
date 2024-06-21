@@ -11,7 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class userDetail extends StatefulWidget {
-  const userDetail({Key? key}) : super(key: key);
+  const userDetail({super.key});
 
   @override
   State<userDetail> createState() => _userDetailState();
