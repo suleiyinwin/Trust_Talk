@@ -5,7 +5,12 @@ String formatTime(String timestamp) {
   return DateFormat('hh:mm a').format(dateTime);
 }
 
+String formatDateTime(String dateString) {
+    final date = DateTime.parse(dateString);
+    return DateFormat('dd/MM/yyyy, hh:mm a').format(date);
+}
+
 String formatDate(String dateString) {
     final date = DateTime.parse(dateString);
-    return DateFormat('dd MMM, HH:mm a').format(date);
-  }
+    return DateFormat('dd/MM/yyyy, HH').format(date);
+}

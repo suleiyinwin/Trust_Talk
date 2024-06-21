@@ -1,7 +1,5 @@
 import 'dart:convert';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/date_time_utils.dart';
@@ -160,10 +158,35 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final message = messages[index];
+                  final isNewDay = index == 0 || formatDate(message['createdAt']) != formatDate(messages[index - 1]['createdAt']);
                   final isOwnMessage = message['sender'] == widget.chat['members'][1];
-                  return isOwnMessage
+
+                  // Create a list of widgets to display the messages in that day
+                  List<Widget> messageWidgets = [];
+                  
+                  if (isNewDay) {
+                    messageWidgets.add(
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Center(
+                          child: Text(
+                            formatDateTime(message['createdAt']),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  messageWidgets.add(
+                    isOwnMessage
                       ? OwnMsg(message: message['content'], time: formatTime(message['createdAt']))
-                      : OtherMsg(message: message['content'], time: formatTime(message['createdAt']));
+                      : OtherMsg(message: message['content'], time: formatTime(message['createdAt'])),
+                  );
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: messageWidgets,
+                  );
                 },
               ),
             ),
