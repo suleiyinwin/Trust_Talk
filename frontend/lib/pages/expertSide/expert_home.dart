@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
-import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/expertlogin.dart';
 import 'package:frontend/pages/education_content/createpreview.dart';
 import 'package:frontend/pages/education_content/expert_contents.dart';
@@ -14,10 +13,12 @@ class ExpertHome extends StatefulWidget {
 }
 
 class _ExpertHomeState extends State<ExpertHome> {
+
   @override
   void initState() {
     super.initState();
     _checkForToken();
+
   }
 
   Future<void> _checkForToken() async {
@@ -36,24 +37,14 @@ class _ExpertHomeState extends State<ExpertHome> {
       }
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundGrey,
       appBar: AppBar(
+        toolbarHeight: 0,
         backgroundColor: AppColors.white,
-        title: Container(
-          padding: const EdgeInsets.fromLTRB(5, 25, 5, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Welcome back,',
-                  style: TTtextStyles.bodylargeRegular
-                      .copyWith(color: AppColors.disableColor)),
-            ],
-          ),
-        ),
       ),
       body: const SingleChildScrollView(
         child: Padding(

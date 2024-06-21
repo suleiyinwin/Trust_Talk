@@ -4,6 +4,7 @@ import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:frontend/pages/authentication/usertype.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,9 +80,21 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                ),
+                onPressed: () => Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) => const UserType()), (route) => false),
+
+                
+              )
+      ),
       body: SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 170, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
         child: Form(
           key: _formKey,
           child: Column(

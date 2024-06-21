@@ -185,6 +185,79 @@ class _EditContentState extends State<EditContent> {
     });
   }
 
+  void _showDeleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: AppColors.white,
+          content: Text(
+            "This action will delete your content permanently.\nAre you sure?",
+            style: TTtextStyles.bodymediumRegular.copyWith(
+              color: Colors.black,
+              fontSize: 18,
+            ),
+          ),
+          actions: [
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.secondaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: AppColors.secondaryColor,
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.primaryColor,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _deleteContent();
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: AppColors.primaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      backgroundColor: AppColors.primaryColor,
+                    ),
+                    child: Text(
+                      "Delete",
+                      style: TTtextStyles.bodymediumBold.copyWith(
+                        color: AppColors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -409,7 +482,7 @@ class _EditContentState extends State<EditContent> {
                               ),
                             ),
                             onPressed: () {
-                              _deleteContent();
+                              _showDeleteAccountDialog();
                             },
                             child: Text(
                               'Delete',
