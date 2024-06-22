@@ -9,7 +9,11 @@ import 'package:frontend/pages/chat/chatroom.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+  final Function(int) onUnreadCountChanged;
+
+  const ChatPage({
+    super.key, 
+    required this.onUnreadCountChanged});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -24,6 +28,12 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _chatsFuture = fetchChats();
+  }
+
+  Future<void> _fetchUpdatedChats() async {
+    setState(() {
+      _chatsFuture = fetchChats();
+    });
   }
 
   Future<List<Map<String, dynamic>>> fetchChats() async {
@@ -53,6 +63,13 @@ class _ChatPageState extends State<ChatPage> {
           print('Error fetching additional data: $e');
         }
       }));
+      //count unread messages in each chat
+      int unreadCount = chatsWithInfo
+        .where((chat) => 
+          chat['lastMessage']?['read'] == false &&
+          chat['lastMessage']?['sender'] != chat['members'][0])
+        .length;
+      widget.onUnreadCountChanged(unreadCount);
 
       return List<Map<String, dynamic>>.from(jsonResponse);
     } else {
@@ -97,6 +114,7 @@ class _ChatPageState extends State<ChatPage> {
                 return ChatCard(
                   chat: snapshot.data![index],
                   expertInfo: chatsWithInfo[index],
+                  onChatTap: _fetchUpdatedChats, // Pass the refresh function to the ChatCard
                 );
               },
             );
@@ -110,18 +128,25 @@ class _ChatPageState extends State<ChatPage> {
 class ChatCard extends StatelessWidget {
   final Map<String, dynamic> chat;
   final Map<String, dynamic> expertInfo;
+  final VoidCallback onChatTap;
   
   const ChatCard({
     required this.chat,
     required this.expertInfo,
+    required this.onChatTap,
     super.key});
 
   @override
   Widget build(BuildContext context) {
+    final bool isUnread = chat['lastMessage']?['read'] == false;
+    final isSender = chat['lastMessage']?['sender'] == chat['members'][0];
+
     return InkWell(
-      onTap: () => Navigator.push(
+      onTap: () async { await Navigator.push(
         context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
-        ),
+        );
+        onChatTap();
+      },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: ListTile(
@@ -132,11 +157,26 @@ class ChatCard extends StatelessWidget {
                 : const AssetImage('images/logo.png') as ImageProvider,
           ),
           title: Text(expertInfo['name'] ?? 'Expert', style: TTtextStyles.bodylargeBold),
-          subtitle: Text(chat['lastMessage']?['content'] ?? ''),
+          subtitle: Text(
+            chat['lastMessage']?['content'] ?? '',
+            style: isUnread && !isSender
+                ? TTtextStyles.bodymediumBold.copyWith(
+                  fontWeight: FontWeight.w700,
+                )
+                : TTtextStyles.bodymediumRegular.copyWith(
+                  color: AppColors.textColor.withOpacity(0.5)
+                )),
           trailing: Text(
             chat['lastMessage']?['createdAt'] != null
                 ? formatTime(chat['lastMessage']!['createdAt'])
-                : ''),
+                : '',
+            style: isUnread && !isSender
+                ? TTtextStyles.bodysmallBold.copyWith(
+                  fontWeight: FontWeight.w700,
+                )
+                : TTtextStyles.bodysmallRegular.copyWith(
+                  color: AppColors.textColor.withOpacity(0.5)
+                )),
         ),
       ),
     );

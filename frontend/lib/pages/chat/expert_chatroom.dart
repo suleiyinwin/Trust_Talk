@@ -106,9 +106,28 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
           messages = messagesData.cast<Map<String, dynamic>>();
         });
         // print("Fetched messages: $messages");
+        // Mark all messages as read
+        for (var message in messages) {
+          if (message['receiver'] == widget.chat['members'][1] && !message['read']) {
+            markMessageAsRead(message['msgId']);
+          }
+        }
       }
     } catch (error) {
       print('Failed to load messages: $error');
+    }
+  }
+
+  Future<void> markMessageAsRead(String messageId) async {
+    try {
+      await http.post(
+        Uri.parse('$backendUrl/chat/markread/$messageId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (error) {
+      print('Failed to mark message as read: $error');
     }
   }
 
@@ -140,9 +159,17 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
             padding: const EdgeInsets.only(right: 10.0),
             child: CircleAvatar(
               radius: 20,
-              backgroundImage: userInfo?['profileurl'] != null
-                ? NetworkImage(userInfo?['profileurl'])
-                : const AssetImage('images/logo.png') as ImageProvider,
+              child: ClipOval(
+                child: Image.network(
+                  userInfo?['profileurl'] ?? '',
+                  fit: BoxFit.cover,
+                  width: 40.0,
+                  height: 40.0,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Image.asset('images/default_profile.png', fit: BoxFit.cover, width: 40.0, height: 40.0);
+                  },
+                ),
+              ),
             ),
           ),
         ],

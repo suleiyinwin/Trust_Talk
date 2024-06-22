@@ -6,6 +6,7 @@ import getContentData from '../controllers/edu/getContentData.js';
 import updateContentData from '../controllers/edu/updateContent.js';
 import deleteContent from '../controllers/edu/deleteContent.js';
 import getUser from '../controllers/edu/getUser.js';
+import getUserContents from '../controllers/edu/getUserContents.js';
 
 const eduRouter = Router();
 eduRouter.post('/getExpertProfile', getExpertProfile);
@@ -15,5 +16,6 @@ eduRouter.post('/getContentData',getContentData);
 eduRouter.post('/updateContent', updateContentData);
 eduRouter.post('/deleteContent', deleteContent);
 eduRouter.post('/getUser', getUser);
+eduRouter.post('/userContents', getUserContents);
 
 export default eduRouter;
