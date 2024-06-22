@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:frontend/date_time_utils.dart';
+import 'package:frontend/pages/chat/chat_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -28,6 +29,9 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _chatsFuture = fetchChats();
+    ChatUpdateNotifier.stream.listen((_) {
+      _fetchUpdatedChats();
+    });
   }
 
   Future<void> _fetchUpdatedChats() async {
@@ -90,6 +94,29 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  Future<void> deleteChat(String chatId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null) {
+      final response = await http.delete(
+        Uri.parse('$backendUrl/chat/deletechat/$chatId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Refresh chat list after deletion
+        _fetchUpdatedChats();
+      } else {
+        throw Exception('Failed to delete chat');
+      }
+    } else {
+      throw Exception('No token found');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,10 +138,82 @@ class _ChatPageState extends State<ChatPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                return ChatCard(
-                  chat: snapshot.data![index],
-                  expertInfo: chatsWithInfo[index],
-                  onChatTap: _fetchUpdatedChats, // Pass the refresh function to the ChatCard
+                return Dismissible(
+                  key: Key(snapshot.data![index]['chatId']),
+                  direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) async {
+                    return await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          backgroundColor: AppColors.white,
+                          content: Text('Are you sure you want to delete this chat?',
+                                  style: TTtextStyles.bodymediumRegular.copyWith(color: Colors.black, fontSize: 18),
+                          ),
+                          actions: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(false);
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(color: AppColors.secondaryColor),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      backgroundColor: AppColors.secondaryColor,
+                                    ),
+                                    child: Text(
+                                      "Cancel",
+                                      style: TTtextStyles.bodymediumBold.copyWith(
+                                          color: AppColors.primaryColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop(true);
+                                    },
+                                    style: OutlinedButton.styleFrom(
+                                      side: const BorderSide(color: AppColors.primaryColor),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                      ),
+                                      backgroundColor: AppColors.primaryColor,
+                                    ),
+                                    child: Text(
+                                      "Delete",
+                                      style: TTtextStyles.bodymediumBold.copyWith(
+                                          color: AppColors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  onDismissed: (direction) {
+                    deleteChat(snapshot.data![index]['chatId']);
+                  },
+                  background: Container(color: Colors.red),
+                  child: ChatCard(
+                    chat: snapshot.data![index],
+                    expertInfo: chatsWithInfo[index],
+                  ),
                 );
               },
             );
@@ -128,12 +227,10 @@ class _ChatPageState extends State<ChatPage> {
 class ChatCard extends StatelessWidget {
   final Map<String, dynamic> chat;
   final Map<String, dynamic> expertInfo;
-  final VoidCallback onChatTap;
   
   const ChatCard({
     required this.chat,
     required this.expertInfo,
-    required this.onChatTap,
     super.key});
 
   @override
@@ -145,7 +242,6 @@ class ChatCard extends StatelessWidget {
       onTap: () async { await Navigator.push(
         context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
         );
-        onChatTap();
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),

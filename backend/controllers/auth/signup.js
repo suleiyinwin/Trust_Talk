@@ -1,4 +1,3 @@
-import admin from 'firebase-admin';
 import User from '../../dbModels/user.js';
 
 const signup = async (req, res) => {
@@ -24,7 +23,7 @@ const signup = async (req, res) => {
     res.status(200).json({ message: 'User signed up successfully' });
   } catch (error) {
     console.error('Error signing up user:', error);
-    res.status(500).json({ error: 'Failed to sign up user' });
+    res.status(500).json({ message: 'Failed to sign up user' });
   }
 }
 
