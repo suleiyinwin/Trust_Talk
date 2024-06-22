@@ -412,17 +412,24 @@ class EditProfileButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.chevron_right_rounded),
-      onPressed: () {
-        Navigator.push(
+      onPressed: () async {
+        final result = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const EditProfile(),
           ),
         );
+        
+        if (result == 'updated') {
+          final userDetailState =
+              context.findAncestorStateOfType<_userDetailState>();
+          userDetailState?._loadUserProfile();
+        }
       },
     );
   }
 }
+
 
 class SettingsSection extends StatelessWidget {
   final VoidCallback signOutCallback;
@@ -508,3 +515,4 @@ void navigateToChangePassword(BuildContext context) {
     MaterialPageRoute(builder: (context) => const ChangePasswordPage()),
   );
 }
+

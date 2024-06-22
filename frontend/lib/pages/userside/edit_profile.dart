@@ -104,12 +104,9 @@ class _EditProfileState extends State<EditProfile> {
           final newProfilePhotoUrl = responseData['user']['profileurl'];
           await prefs.setString('profilePhotoUrl', newProfilePhotoUrl);
         }
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const userDetail(),
-          ),
-        );
+        if(mounted){
+        Navigator.pop(context, 'updated');
+        }
       } else {
         final responseData = jsonDecode(responseBody);
         if (response.statusCode == 400 &&
@@ -350,3 +347,4 @@ class TextFieldWithTitle extends StatelessWidget {
     );
   }
 }
+

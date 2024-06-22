@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/signup.dart';
+import 'package:frontend/pages/userside/user_contents.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,12 +18,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String username = "";
   final String? backendUrl = dotenv.env['BACKEND_URL'];
+  String category1 = 'All';
+  String category2 = 'STD Knowledge';
+  String category3 = 'Women\'s Health';
+  String category4 = 'Men\'s Health';
+  String category5 = 'Others';
 
   @override
   void initState() {
     super.initState();
     _checkForToken();
   }
+  
 
   Future<void> _checkForToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -141,13 +148,13 @@ class _HomeState extends State<Home> {
                     ),
                   ];
                 },
-                body: const TabBarView(
+                body: TabBarView(
                   children: [
-                    Center(child: Text('Tab 1')),
-                    Center(child: Text('Tab 2')),
-                    Center(child: Text('Tab 3')),
-                    Center(child: Text('Tab 4')),
-                    Center(child: Text('Tab 5')),
+                    UserContents(category: category1),
+                    UserContents(category: category2),
+                    UserContents(category: category3),
+                    UserContents(category: category4),
+                    UserContents(category: category5),
                   ],
                 ),
               );

@@ -179,14 +179,12 @@ class _CreateContentState extends State<CreateContent> {
                               )
                             : Stack(
                                 children: [
-                                  Flexible(
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 200,
-                                      child: Image.memory(
-                                        _contentImage!,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 200,
+                                    child: Image.memory(
+                                      _contentImage!,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                   Positioned(

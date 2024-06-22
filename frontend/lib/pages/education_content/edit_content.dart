@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/components/expert_nav.dart';
 import 'package:frontend/components/textstyles.dart';
 import 'package:http/http.dart' as http;
@@ -326,14 +324,12 @@ class _EditContentState extends State<EditContent> {
                               )
                             : Stack(
                                 children: [
-                                  Flexible(
-                                    child: SizedBox(
-                                      width: double.infinity,
-                                      height: 200,
-                                      child: Image.memory(
-                                        _contentImage!,
-                                        fit: BoxFit.cover,
-                                      ),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 200,
+                                    child: Image.memory(
+                                      _contentImage!,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                   Positioned(
