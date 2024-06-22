@@ -108,7 +108,7 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
         // print("Fetched messages: $messages");
         // Mark all messages as read
         for (var message in messages) {
-          if (message['receiver'] == widget.chat['members'][0] && !message['read']) {
+          if (message['receiver'] == widget.chat['members'][1] && !message['read']) {
             markMessageAsRead(message['msgId']);
           }
         }
