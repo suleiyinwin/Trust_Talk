@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 
@@ -32,17 +33,20 @@ class OtherMsg extends StatelessWidget {
               //     backgroundImage: AssetImage('images/logo.png') as ImageProvider,
               //   ),
               // ),
-              Card(
-                margin: const EdgeInsets.only(left: 5, right: 3),
-                color: AppColors.secondaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    message,
-                    style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.textColor)),
+              Flexible(
+                child: Card(
+                  margin: const EdgeInsets.only(left: 5, right: 3),
+                  color: AppColors.secondaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      message,
+                      style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.textColor),
+                      softWrap: true,),
+                  ),
                 ),
               ),
               Text(

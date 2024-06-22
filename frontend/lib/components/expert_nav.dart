@@ -5,7 +5,11 @@ import 'package:frontend/pages/expertSide/expert_home.dart';
 import 'package:frontend/pages/expertSide/expert_profile.dart';
 
 class ExpertNav extends StatefulWidget {
-  const ExpertNav({super.key});
+  final int unreadCount;
+
+  const ExpertNav({
+    this.unreadCount = 0,
+    super.key});
 
   @override
   State<ExpertNav> createState() => _ExpertNavState();
@@ -13,6 +17,20 @@ class ExpertNav extends StatefulWidget {
 
 class _ExpertNavState extends State<ExpertNav> {
   int _selectedIndex = 1;
+  int _unreadCount = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _unreadCount = widget.unreadCount;
+  }
+
+  void updateBadgeCount(int count) {
+    setState(() {
+      _unreadCount = count;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,22 +55,24 @@ class _ExpertNavState extends State<ExpertNav> {
           surfaceTintColor: AppColors.backgroundColor,
           indicatorColor: AppColors.backgroundColor,
           backgroundColor: AppColors.backgroundColor,
-          destinations: const <NavigationDestination>[
+          destinations: <NavigationDestination>[
             NavigationDestination(
-              icon: Badge(
-                  //change the value of the badge label to the number of unread messages
-                  label: Text('2'),
-                  child: Icon(Icons.question_answer_outlined)),
+              icon: _unreadCount > 0
+                  ? Badge(
+                      label: Text('$_unreadCount'),
+                      child: const Icon(Icons.question_answer_outlined),
+                    )
+                  : const Icon(Icons.question_answer_outlined),
               selectedIcon:
-                  Icon(Icons.question_answer, color: AppColors.primaryColor),
+                  const Icon(Icons.question_answer, color: AppColors.primaryColor),
               label: "Chat",
             ),
-            NavigationDestination(
+            const NavigationDestination(
               icon: Icon(Icons.home_outlined),
               selectedIcon: Icon(Icons.home, color: AppColors.primaryColor),
               label: "Home",
             ),
-            NavigationDestination(
+            const NavigationDestination(
                 icon: Icon(Icons.account_circle_outlined),
                 selectedIcon:
                     Icon(Icons.account_circle, color: AppColors.primaryColor),
@@ -64,10 +84,10 @@ class _ExpertNavState extends State<ExpertNav> {
         top: false,
         child: IndexedStack(
           index: _selectedIndex,
-          children: const <Widget>[
-            ChatsPage(),
-            ExpertHome(),
-            ExpertProfile(),
+          children: <Widget>[
+            ChatsPage(onUnreadCountChanged: updateBadgeCount),
+            const ExpertHome(),
+            const ExpertProfile(),
           ],
         ),
       ),

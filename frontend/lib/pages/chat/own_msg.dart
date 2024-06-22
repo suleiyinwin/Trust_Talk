@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
 
@@ -28,17 +29,20 @@ class OwnMsg extends StatelessWidget {
               Text(time, style: TTtextStyles.bodysmallRegular.copyWith(
                               color: AppColors.textColor.withOpacity(0.5),
               ),),
-              Card(
-                margin: const EdgeInsets.only(left: 5, right: 3),
-                color: AppColors.primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Text(
-                    message,
-                    style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white)
+              Flexible(
+                child: Card(
+                  margin: const EdgeInsets.only(left: 5, right: 3),
+                  color: AppColors.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      message,
+                      style: TTtextStyles.bodymediumRegular.copyWith(color: AppColors.white),
+                      softWrap: true,
+                    ),
                   ),
                 ),
               ),
