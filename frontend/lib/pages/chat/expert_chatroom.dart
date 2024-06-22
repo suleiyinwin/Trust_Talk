@@ -159,9 +159,17 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
             padding: const EdgeInsets.only(right: 10.0),
             child: CircleAvatar(
               radius: 20,
-              backgroundImage: userInfo?['profileurl'] != null
-                ? NetworkImage(userInfo?['profileurl'])
-                : const AssetImage('images/logo.png') as ImageProvider,
+              child: ClipOval(
+                child: Image.network(
+                  userInfo?['profileurl'] ?? '',
+                  fit: BoxFit.cover,
+                  width: 40.0,
+                  height: 40.0,
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Image.asset('images/default_profile.png', fit: BoxFit.cover, width: 40.0, height: 40.0);
+                  },
+                ),
+              ),
             ),
           ),
         ],
