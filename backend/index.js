@@ -13,11 +13,6 @@ import expertRouter from './routers/expertRouter.js';
 import mongoose from 'mongoose';
 import Message from './dbModels/message.js';
 import Chat from './dbModels/chat.js';
-import dotenv from 'dotenv';
-dotenv.config();
-
-console.log('EMAIL:', process.env.EMAIL);
-console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD);
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
