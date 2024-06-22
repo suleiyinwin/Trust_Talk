@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/date_time_utils.dart';
+import 'package:frontend/pages/chat/chat_notifier.dart';
 import 'package:frontend/pages/chat/other_msg.dart';
 import 'package:frontend/pages/chat/own_msg.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -40,6 +41,7 @@ class _IndiChatState extends State<IndiChat> {
     setState(() {
       messages.add(message);
     });
+    ChatUpdateNotifier.notify();
   }
 
   void sendMessage() {
@@ -62,6 +64,7 @@ class _IndiChatState extends State<IndiChat> {
       //   messages.add(message);
       // });
       _messageController.clear();
+      ChatUpdateNotifier.notify();
     }
   }
 
