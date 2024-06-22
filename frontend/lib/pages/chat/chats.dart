@@ -141,6 +141,27 @@ class _ChatPageState extends State<ChatPage> {
                 return Dismissible(
                   key: Key(snapshot.data![index]['chatId']),
                   direction: DismissDirection.endToStart,
+                  confirmDismiss: (direction) async {
+                    return await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('Delete Chat'),
+                          content: const Text('Are you sure you want to delete this chat?'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                   onDismissed: (direction) {
                     deleteChat(snapshot.data![index]['chatId']);
                   },

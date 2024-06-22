@@ -1,4 +1,5 @@
 import Chat from "../../dbModels/chat.js";
+import Message from "../../dbModels/message.js";
 import admin from 'firebase-admin';
 import firebaseClientConfig from '../../database/firebaseClientConfig.js';
 import dotenv from 'dotenv';
@@ -27,7 +28,11 @@ const deleteChat = async (req, res) => {
             return res.status(403).send({ message: 'Unauthorized' });
         }
 
-        await chat.remove();
+        // Delete the associated messages
+        await Message.deleteMany({ chatId });
+        // Delete the chat
+        await Chat.deleteOne({ chatId });
+
         res.status(200).send({ message: 'Chat and associated messages deleted' });
     } catch (error) {
         console.error('Error deleting chat:', error.message);

@@ -9,14 +9,5 @@ const chatSchema = new mongoose.Schema({
     { timestamps: true }
 );
 
-chatSchema.pre('remove', async function(next) {
-    try {
-        await Message.deleteMany({ chatId: this.chatId });
-        next();
-    } catch (err) {
-        next(err);
-    }
-});
-
 const Chat = mongoose.model('chats', chatSchema);
 export default Chat;
