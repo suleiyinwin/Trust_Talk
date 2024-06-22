@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:http/http.dart' as http;
 import 'package:frontend/components/colors.dart';
 
@@ -19,6 +20,7 @@ class _ForgotPwdModalState extends State<ForgotPwdModal> {
   final emailRegex = RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
   final String? backendUrl = dotenv.env['BACKEND_URL'];
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -38,7 +40,7 @@ class _ForgotPwdModalState extends State<ForgotPwdModal> {
           msg: "Password reset link successfully sent to $email",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.primaryColor,
           textColor: Colors.white,
           fontSize: 16.0,
         );
@@ -88,90 +90,81 @@ class _ForgotPwdModalState extends State<ForgotPwdModal> {
                   icon: const Icon(Icons.cancel, color: Colors.grey),
                 ),
               ),
-              const Text(
+              Text(
                 'Forgot Password',
-                style: TextStyle(
+                style: TTtextStyles.bodymediumRegular.copyWith(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: AppColors.textColor,
                 ),
               ),
               const SizedBox(height: 5),
-              const Text(
+              Text(
                 'We will send a password reset link to your email.',
-                style: TextStyle(
+                style: TTtextStyles.bodymediumRegular.copyWith(
                   fontSize: 15,
                   color: AppColors.textColor,
                 ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
-              const Padding(
-                padding: EdgeInsets.only(left: 25, bottom: 5),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    'Email',
-                    style: TextStyle(
-                      fontSize: 17,
-                      color: AppColors.textColor,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-              ),
               Padding(
-                padding: const EdgeInsets.only(left: 0, right: 0, bottom: 5),
-                child: TextFormField(
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter an email address';
-                    } else if (!emailRegex.hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    } else if (errorMessage.isNotEmpty) {
-                      return errorMessage;
-                    }
-                    return null;
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      errorMessage = '';
-                    });
-                  },
-                  decoration: InputDecoration(
-                    labelStyle: TextStyle(
-                        color: AppColors.primaryColor.withOpacity(0.5)),
-                    fillColor: AppColors.backgroundColor,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: BorderSide.none,
+                padding: const EdgeInsets.symmetric(horizontal: 2),
+                child: SizedBox(
+                  height: 50,
+                  child: TextFormField(
+                    controller: _emailController,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter an email address';
+                      } else if (!emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email address';
+                      } else if (errorMessage.isNotEmpty) {
+                        return errorMessage;
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        errorMessage = '';
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Email',
+                      hintStyle: TextStyle(
+                        color: AppColors.textColor.withOpacity(0.5),
+                      ),
+                      fillColor: AppColors.backgroundColor,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        borderSide: const BorderSide(color: Colors.red),
+                      ),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
                     ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                      borderSide: const BorderSide(
-                          color: Colors.red), // Custom border color for validation error
-                    ),
-                    floatingLabelBehavior: FloatingLabelBehavior.never,
                   ),
                 ),
               ),
               const SizedBox(height: 15),
               SizedBox(
-                width: 160,
-                height: 50,
+                width: 150,
+                height: 40,
                 child: ElevatedButton(
                   onPressed: _handleSendEmail,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: BorderSide.none,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Send Email',
-                    style: TextStyle(
-                      color: AppColors.backgroundColor,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
+                    style: TTtextStyles.bodylargeBold.copyWith(
+                      color: AppColors.white,
                     ),
                   ),
                 ),
