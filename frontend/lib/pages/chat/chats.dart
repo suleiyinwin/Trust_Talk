@@ -94,6 +94,29 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
+  Future<void> deleteChat(String chatId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('token');
+
+    if (token != null) {
+      final response = await http.delete(
+        Uri.parse('$backendUrl/chat/deletechat/$chatId'),
+        headers: {
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Refresh chat list after deletion
+        _fetchUpdatedChats();
+      } else {
+        throw Exception('Failed to delete chat');
+      }
+    } else {
+      throw Exception('No token found');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,9 +138,17 @@ class _ChatPageState extends State<ChatPage> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                return ChatCard(
-                  chat: snapshot.data![index],
-                  expertInfo: chatsWithInfo[index],
+                return Dismissible(
+                  key: Key(snapshot.data![index]['chatId']),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    deleteChat(snapshot.data![index]['chatId']);
+                  },
+                  background: Container(color: Colors.red),
+                  child: ChatCard(
+                    chat: snapshot.data![index],
+                    expertInfo: chatsWithInfo[index],
+                  ),
                 );
               },
             );
