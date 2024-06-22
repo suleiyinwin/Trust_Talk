@@ -6,6 +6,8 @@ import multer from 'multer';
 import dotenv from 'dotenv';
 import axios from 'axios';
 import firebaseClientConfig from '../../database/firebaseClientConfig.js';
+import Chat from '../../dbModels/chat.js'
+import Message from '../../dbModels/message.js';
 
 dotenv.config();
 // Multer for file uploads
@@ -181,6 +183,20 @@ export const deleteAccount = async (req, res) => {
         const user = await User.findOneAndDelete({ userId });
         if (!user) {
             return res.status(404).send({ message: 'User not found' });
+        }
+        // Find all chats involving the user
+        const chats = await Chat.find({ members: userId });
+        if (!chats || !Array.isArray(chats)) {
+            throw new Error('chats is not iterable or not an array');
+        }
+
+        // Delete associated messages and chats
+        for (const chat of chats) {
+            // Delete the associated messages
+            await Message.deleteMany({ chatId: chat.chatId });
+
+            // Delete the chat
+            await Chat.deleteOne({ chatId: chat.chatId });
         }
 
         res.send({ message: 'User account deleted successfully' });

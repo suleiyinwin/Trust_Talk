@@ -15,9 +15,11 @@ class ChangePasswordPage extends StatefulWidget {
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _currentPasswordController = TextEditingController();
+  final TextEditingController _currentPasswordController =
+      TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
-  final TextEditingController _confirmNewPasswordController = TextEditingController();
+  final TextEditingController _confirmNewPasswordController =
+      TextEditingController();
   bool _currentPasswordVisible = true;
   bool _newPasswordVisible = true;
   bool _confirmNewPasswordVisible = true;
@@ -73,7 +75,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
           if (responseData['message'] == 'Wrong current password. Try again.') {
             _currentPasswordError = responseData['message'];
           } else {
-            _errorMessage = responseData['message'] ?? 'Failed to change password';
+            _errorMessage =
+                responseData['message'] ?? 'Failed to change password';
           }
         });
       }
@@ -119,6 +122,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             _currentPasswordVisible = !_currentPasswordVisible;
                           });
                         },
+                        onChanged: (value) {
+                          setState(() {
+                            _currentPasswordError = '';
+                          });
+                        },
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please Enter your password';
@@ -127,7 +135,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           }
                           return null;
                         },
-                        
                       ),
                       const SizedBox(height: 20),
                       TextFieldWithTitle(
@@ -153,7 +160,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           } else if (!passwordRegex.hasMatch(value)) {
                             setState(() {
                               newPasswordError = true;
-                              newPasswordErrorText = 'Password must contain at least 6 characters, including:\n'
+                              newPasswordErrorText =
+                                  'Password must contain at least 6 characters, including:\n'
                                   '• Uppercase\n'
                                   '• Lowercase\n'
                                   '• Numbers and special characters';
@@ -162,7 +170,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           }
                           return null;
                         },
-                       
                         helperText: !newPasswordError
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,7 +179,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                     '• Uppercase\n'
                                     '• Lowercase\n'
                                     '• Numbers and special characters',
-                                    style: TTtextStyles.bodysmallRegular.copyWith(fontSize: 12),
+                                    style: TTtextStyles.bodysmallRegular
+                                        .copyWith(fontSize: 12),
                                   ),
                                 ],
                               )
@@ -185,7 +193,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         obscureText: _confirmNewPasswordVisible,
                         onToggleVisibility: () {
                           setState(() {
-                            _confirmNewPasswordVisible = !_confirmNewPasswordVisible;
+                            _confirmNewPasswordVisible =
+                                !_confirmNewPasswordVisible;
                           });
                         },
                         validator: (value) {
@@ -244,6 +253,7 @@ class TextFieldWithTitle extends StatelessWidget {
   final String? errorText;
   final Widget? helperText;
   final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
 
   const TextFieldWithTitle({
     super.key,
@@ -254,7 +264,8 @@ class TextFieldWithTitle extends StatelessWidget {
     this.errorText,
     this.helperText,
     this.validator,
-  }) ;
+    this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -272,8 +283,10 @@ class TextFieldWithTitle extends StatelessWidget {
         TextFormField(
           controller: controller,
           obscureText: obscureText,
+          onChanged: onChanged,
           decoration: InputDecoration(
-            contentPadding: const EdgeInsets.symmetric(vertical: 13.0, horizontal: 8.0),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 13.0, horizontal: 8.0),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
               borderSide: BorderSide.none,
@@ -288,7 +301,7 @@ class TextFieldWithTitle extends StatelessWidget {
               onPressed: onToggleVisibility,
             ),
             errorText: errorText,
-             errorMaxLines: 5,
+            errorMaxLines: 5,
           ),
           validator: validator,
         ),
