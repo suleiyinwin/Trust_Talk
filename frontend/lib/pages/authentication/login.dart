@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/authentication/forgot_pwd.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/pages/authentication/usertype.dart';
@@ -81,157 +83,175 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        leading: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                ),
-                onPressed: () => Navigator.pushAndRemoveUntil(context,
-                MaterialPageRoute(builder: (context) => const UserType()), (route) => false),
-
-                
-              )
-      ),
-      body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 90,
-                height: 90,
-                child: Image.asset(
-                  'images/logo.png',
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Text('Error loading splash  image');
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                child: Text(
-                  'Welcome!',
-                  style: TTtextStyles.title1Bold.copyWith(
-                    color: AppColors.textColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter an email address';
-                    } else if (errorMessage.isNotEmpty) {
-                      return errorMessage;
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: '   Email',
-                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.disableColor,
-                    ),
-
-                    fillColor: AppColors.backgroundGrey,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          color: Colors
-                              .red), // Custom border color for validation error
-                    ),
-                    floatingLabelBehavior:
-                        FloatingLabelBehavior.never, // Hide label when focused
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter a password';
-                    }
-                    return null;
-                  },
-                  obscureText: passwordVisibleOne,
-                  decoration: InputDecoration(
-                    labelText: '   Password',
-                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
-                      color: AppColors.disableColor,
-                    ),
-
-                    fillColor: AppColors.backgroundGrey,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          color: Colors
-                              .red), // Custom border color for validation error
-                    ),
-                    floatingLabelBehavior:
-                        FloatingLabelBehavior.never, // Hide label when focused
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        passwordVisibleOne
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.disableColor,
+          backgroundColor: AppColors.backgroundColor,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+            ),
+            onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const UserType()),
+                (route) => false),
+          )),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 90,
+                        child: Image.asset(
+                          'images/logo.png',
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Text('Error loading splash  image');
+                          },
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          passwordVisibleOne = !passwordVisibleOne;
-                        });
-                      },
-                    ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        child: Text(
+                          'Welcome!',
+                          style: TTtextStyles.title1Bold.copyWith(
+                            color: AppColors.textColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: _emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter an email address';
+                            } else if (errorMessage.isNotEmpty) {
+                              return errorMessage;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: '   Email',
+                            labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                              color: AppColors.disableColor,
+                            ),
+
+                            fillColor: AppColors.backgroundGrey,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  color: Colors
+                                      .red), // Custom border color for validation error
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, // Hide label when focused
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter a password';
+                            }
+                            return null;
+                          },
+                          obscureText: passwordVisibleOne,
+                          decoration: InputDecoration(
+                            labelText: '   Password',
+                            labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                              color: AppColors.disableColor,
+                            ),
+
+                            fillColor: AppColors.backgroundGrey,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  color: Colors
+                                      .red), // Custom border color for validation error
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, // Hide label when focused
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                passwordVisibleOne
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: AppColors.disableColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisibleOne = !passwordVisibleOne;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 3.0, right: 5.0),
+                          child: ForgotPwd(),
+                          ),
+                      ),
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                login();
+                              }
+                            },
+                            child: Text(
+                              'Login',
+                              style: TTtextStyles.subheadlineBold.copyWith(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        login();
-                      }
-                    },
-                    child: Text(
-                      'Login',
-                      style: TTtextStyles.subheadlineBold.copyWith(
-                        color: AppColors.white,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Spacer(),
-              Row(
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 40.0),
+            child: SizedBox(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -258,10 +278,50 @@ class _LoginState extends State<Login> {
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      )),
+        ],
+      ),
     );
+  }
+}
+class ForgotPwd extends StatelessWidget {
+  const ForgotPwd({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      child: Text(
+        'Forgot Password?',
+        style: TTtextStyles.bodysmallRegular.copyWith(
+          fontSize: 13,
+          color: Colors.black
+        ),
+      ),
+       onPressed: (){
+          showDialog(
+            context: context, 
+            builder: (BuildContext context){
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.backgroundColor,
+                content: const SizedBox(
+                  width: 800,
+                  height: 350,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ForgotPwdModal()],
+                    ),
+                  ),
+                ),
+              );
+            }
+            );
+        } 
+      );
   }
 }
