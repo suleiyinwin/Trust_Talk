@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -65,15 +64,14 @@ class _LoginState extends State<Login> {
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessageforapi = 'Failed to log in: ${response.body}';
-          print(errorMessageforapi);
+          errorMessageforapi =responseBody['message'] ?? 'Failed to login';
         });
       }
     } catch (e) {
       setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-        print(errorMessageforapi);
       });
     }
   }
@@ -208,6 +206,17 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                       ),
+                      if (errorMessageforapi.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessageforapi,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
                       const Align(
                         alignment: Alignment.centerRight,
                         child: Padding(

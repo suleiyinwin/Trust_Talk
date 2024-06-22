@@ -12,20 +12,24 @@ const expertlogin = async (req, res) => {
 
         const expert = await Expert.findOne({ email });
         if (!expert) {
-            return res.status(400).json({ error: 'User not found' });
+            return res.status(400).json({ message: 'Email does not exist' });
+        }
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const idToken = await userCredential.user.getIdToken();
+            // Verify the ID token using Firebase Admin SDK
+            const decodedToken = await admin.auth().verifyIdToken(idToken);
+            if (decodedToken) {
+                res.status(200).json({ token: idToken, expertId: expert.expertId });
+            } else {
+                console.error('Failed to verify ID token');
+                res.status(401).json({ message: 'Invalid Email' });
+            }
+        }
+        catch (firebaseError) {
+            res.status(401).json({ message: 'Incorrect password' });
         }
 
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        // console.log('User logged in:', userCredential.user);
-        const idToken = await userCredential.user.getIdToken();
-        // console.log(idToken);
-        // Verify the ID token using Firebase Admin SDK
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
-        if (decodedToken) {
-            res.status(200).json({ token: idToken, expertId: expert.expertId });
-        } else {
-            res.status(401).json({ error: 'Invalid credentials' });
-        }
     } catch (error) {
         console.error('Error logging in user:', error.message);
         res.status(500).json({ error: 'Failed to log in user' });
