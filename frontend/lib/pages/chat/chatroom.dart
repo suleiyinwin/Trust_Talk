@@ -104,9 +104,28 @@ class _IndiChatState extends State<IndiChat> {
           messages = messagesData.cast<Map<String, dynamic>>();
         });
         // print("Fetched messages: $messages");
+        // Mark all messages as read
+        for (var message in messages) {
+          if (message['receiver'] == widget.chat['members'][0] && !message['read']) {
+            markMessageAsRead(message['msgId']);
+          }
+        }
       }
     } catch (error) {
       print('Failed to load messages: $error');
+    }
+  }
+
+  Future<void> markMessageAsRead(String messageId) async {
+    try {
+      await http.post(
+        Uri.parse('$backendUrl/chat/markread/$messageId'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+    } catch (error) {
+      print('Failed to mark message as read: $error');
     }
   }
 
