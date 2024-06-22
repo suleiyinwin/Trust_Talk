@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:frontend/date_time_utils.dart';
+import 'package:frontend/pages/chat/chat_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -28,6 +29,9 @@ class _ChatPageState extends State<ChatPage> {
   void initState() {
     super.initState();
     _chatsFuture = fetchChats();
+    ChatUpdateNotifier.stream.listen((_) {
+      _fetchUpdatedChats();
+    });
   }
 
   Future<void> _fetchUpdatedChats() async {
@@ -114,7 +118,6 @@ class _ChatPageState extends State<ChatPage> {
                 return ChatCard(
                   chat: snapshot.data![index],
                   expertInfo: chatsWithInfo[index],
-                  onChatTap: _fetchUpdatedChats, // Pass the refresh function to the ChatCard
                 );
               },
             );
@@ -128,12 +131,10 @@ class _ChatPageState extends State<ChatPage> {
 class ChatCard extends StatelessWidget {
   final Map<String, dynamic> chat;
   final Map<String, dynamic> expertInfo;
-  final VoidCallback onChatTap;
   
   const ChatCard({
     required this.chat,
     required this.expertInfo,
-    required this.onChatTap,
     super.key});
 
   @override
@@ -145,7 +146,6 @@ class ChatCard extends StatelessWidget {
       onTap: () async { await Navigator.push(
         context, MaterialPageRoute(builder: (context) => IndiChat(chat: chat))
         );
-        onChatTap();
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
