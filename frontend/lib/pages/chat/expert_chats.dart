@@ -150,30 +150,37 @@ class ChatCard extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
-          leading: CircleAvatar(
-            radius: 30,
-            child: ClipOval(
-              child: userInfo['profileurl'].isNotEmpty
-                ? Image.network(
-                    userInfo['profileurl'],
-                    fit: BoxFit.cover,
-                    width: 60.0,
-                    height: 60.0,
-                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                      return Image.asset(
+          leading: Container(
+            width: 50,
+      height: 50,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+      ),
+            child: CircleAvatar(
+              // radius: 20,
+                child: ClipOval(
+                  child: userInfo['profileurl'].isNotEmpty
+                    ? Image.network(
+                        userInfo['profileurl'],
+                        fit: BoxFit.cover,
+                        width: 50.0,
+                        height: 50.0,
+                        errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                          return Image.asset(
+                            'images/default_profile.png',
+                            fit: BoxFit.cover,
+                            width: 50.0,
+                            height: 50.0,
+                          );
+                        },
+                      )
+                    : Image.asset(
                         'images/default_profile.png',
                         fit: BoxFit.cover,
                         width: 60.0,
                         height: 60.0,
-                      );
-                    },
-                  )
-                : Image.asset(
-                    'images/default_profile.png',
-                    fit: BoxFit.cover,
-                    width: 60.0,
-                    height: 60.0,
-                  ),
+                      ),
+                ),
             ),
           ),
 

@@ -231,7 +231,7 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
                   Expanded(
                     // width: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
-                      margin: const EdgeInsets.only(left: 5, right: 2, bottom: 8),
+                      margin: const EdgeInsets.only(left: 5, right: 2, bottom: 30),
                       color: AppColors.backgroundGrey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -254,7 +254,7 @@ class _IndiExpertChatState extends State<IndiExpertChat> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(bottom: 30.0),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: IconButton(

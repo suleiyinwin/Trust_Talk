@@ -1,4 +1,5 @@
 import User from '../../dbModels/user.js';
+import admin from 'firebase-admin';
 
 const signup = async (req, res) => {
   try {

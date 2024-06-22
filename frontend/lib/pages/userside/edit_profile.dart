@@ -248,8 +248,8 @@ class ProfileImage extends StatelessWidget {
                           return Image.asset(
                             'images/default_profile.png',
                             fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
+                            width: 200,
+                            height: 200,
                           );
                         },
                       )
