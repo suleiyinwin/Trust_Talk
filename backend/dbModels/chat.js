@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Message from "./message.js";
 
 const chatSchema = new mongoose.Schema({
     chatId: { type: String, required: true, unique: true },
