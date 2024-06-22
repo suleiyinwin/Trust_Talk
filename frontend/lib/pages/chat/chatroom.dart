@@ -160,7 +160,7 @@ class _IndiChatState extends State<IndiChat> {
                 itemBuilder: (context, index) {
                   final message = messages[index];
                   final isNewDay = index == 0 || formatDate(message['createdAt']) != formatDate(messages[index - 1]['createdAt']);
-                  final isOwnMessage = message['sender'] == widget.chat['members'][1];
+                  final isOwnMessage = message['sender'] == widget.chat['members'][0];
 
                   // Create a list of widgets to display the messages in that day
                   List<Widget> messageWidgets = [];
