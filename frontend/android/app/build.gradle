@@ -22,19 +22,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-buildscript {
-    ext.kotlin_version = '2.0.0' 
-
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 android {
     namespace "com.example.frontend"
     compileSdk flutter.compileSdkVersion
@@ -60,8 +47,8 @@ android {
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 20
         targetSdkVersion 33
-        versionCode flutterVersionCode.toInteger()
-        versionName flutterVersionName
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
