@@ -4,7 +4,6 @@ import User from '../../dbModels/user.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-
 const transporter = nodemailer.createTransport({
   service: 'gmail', // You can use any email service
   auth: {

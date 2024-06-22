@@ -48,10 +48,10 @@ class _ForgotPwdModalState extends State<ForgotPwdModal> {
         });
       } else {
         setState(() {
-          errorMessage = 'Email does not exist';
+          errorMessage = jsonDecode(response.body)['message'];
         });
         Fluttertoast.showToast(
-          msg: "Email does not exist",
+          msg: errorMessage,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.red,
