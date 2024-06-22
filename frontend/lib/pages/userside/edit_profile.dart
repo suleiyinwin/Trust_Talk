@@ -7,7 +7,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/components/textstyles.dart';
-import 'package:frontend/pages/userside/user_detail.dart';
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
