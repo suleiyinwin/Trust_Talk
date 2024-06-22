@@ -65,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _profileImageBytes = bytes;
       });
-            print("Selected profile photo loaded: ${pickedFile.path}");
+          
 
     }
   }

@@ -60,10 +60,8 @@ class _MapViewState extends State<MapView> {
   void _searchAndDisplay() async {
     var address = _searchController.text;
     if (address.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter a valid address')),
-      );
-      return;
+     address = 'Bang Mot';
+      _searchController.text = address;
     }
 
     try {

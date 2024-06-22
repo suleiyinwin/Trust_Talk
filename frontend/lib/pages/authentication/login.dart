@@ -317,8 +317,8 @@ class ForgotPwd extends StatelessWidget {
                 ),
                 backgroundColor: AppColors.backgroundColor,
                 content: const SizedBox(
-                  width: 800,
-                  height: 350,
+                  width: 600,
+                  height: 300,
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
