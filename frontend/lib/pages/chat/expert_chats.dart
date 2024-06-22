@@ -152,10 +152,31 @@ class ChatCard extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 30,
-            backgroundImage: userInfo['profileurl'] != null
-                ? NetworkImage(userInfo['profileurl'])
-                : const AssetImage('images/logo.png') as ImageProvider,
+            child: ClipOval(
+              child: userInfo['profileurl'].isNotEmpty
+                ? Image.network(
+                    userInfo['profileurl'],
+                    fit: BoxFit.cover,
+                    width: 60.0,
+                    height: 60.0,
+                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                      return Image.asset(
+                        'images/default_profile.png',
+                        fit: BoxFit.cover,
+                        width: 60.0,
+                        height: 60.0,
+                      );
+                    },
+                  )
+                : Image.asset(
+                    'images/default_profile.png',
+                    fit: BoxFit.cover,
+                    width: 60.0,
+                    height: 60.0,
+                  ),
+            ),
           ),
+
           title: Text(userInfo['username'] ?? 'User', style: TTtextStyles.bodylargeBold),
           subtitle: Text(
             chat['lastMessage']?['content'] ?? '',
