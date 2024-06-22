@@ -17,6 +17,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
   String errorMessage = '';
+  String backendErrorMessage = '';  
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -61,13 +62,14 @@ class _SignupState extends State<Signup> {
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessage = 'Failed to signup: ${response.body}';
+         backendErrorMessage = responseBody['message'] ?? 'Failed to signup';
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to signup: ${e.toString()}';
+        backendErrorMessage = 'Failed to signup: ${e.toString()}';
       });
     }
   }
@@ -117,6 +119,7 @@ class _SignupState extends State<Signup> {
                 ),
               ),
               const SizedBox(height: 10.0),
+              
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -199,7 +202,7 @@ class _SignupState extends State<Signup> {
                     if (value == null || value.isEmpty) {
                       return 'Please Enter a password';
                     } else if (!passwordRegex.hasMatch(value)) {
-                      return 'Password must contain at least 6 characters, one uppercase letter, one lowercase letter, one number and one special character';
+                      return 'Password must contain \n at least 6 characters, \n one uppercase letter, \n one lowercase letter, \n one number and one special character';
                     }
                     return null;
                   },
@@ -289,7 +292,18 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+               if (backendErrorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    backendErrorMessage,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(

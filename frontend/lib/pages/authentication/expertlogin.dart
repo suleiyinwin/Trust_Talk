@@ -62,15 +62,14 @@ class _ExpertLoginState extends State<ExpertLogin> {
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessageforapi = 'Failed to log in: ${response.body}';
-          print(errorMessageforapi);
+           errorMessageforapi =responseBody['message'] ?? 'Failed to login';
         });
       }
     } catch (e) {
-      setState(() {
+     setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-        print(errorMessageforapi);
       });
     }
   }
@@ -202,7 +201,18 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              if (errorMessageforapi.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessageforapi,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
