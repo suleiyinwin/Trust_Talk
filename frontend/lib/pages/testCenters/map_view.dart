@@ -22,6 +22,7 @@ class _MapViewState extends State<MapView> {
   String _selectedType = 'hospital'; // Default to clinics
   Position? _currentPosition;
   String _selectedKeyword = '';
+  bool hasSearched = false;
 
   @override
   void initState() {
@@ -37,7 +38,7 @@ class _MapViewState extends State<MapView> {
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Location permissions are denied')),
+          const SnackBar(content: Text('Location permissions are denied')),
         );
         return;
       }
@@ -60,7 +61,7 @@ class _MapViewState extends State<MapView> {
   void _searchAndDisplay() async {
     var address = _searchController.text;
     if (address.isEmpty) {
-     address = 'Bang Mot';
+      address = 'Bang Mot';
       _searchController.text = address;
     }
 
@@ -77,6 +78,7 @@ class _MapViewState extends State<MapView> {
           location['lat'], location['lng'], _selectedType, _selectedKeyword);
       setState(() {
         _places = places;
+        hasSearched = true;
       });
     } catch (e) {
       print('Error in geocoding or fetching places: $e');
@@ -214,11 +216,13 @@ class _MapViewState extends State<MapView> {
         searchAndDisplay: _searchAndDisplay,
         updateType: _updateType,
         places: _places,
+        selectedType: _selectedType,
         calculateDistance: _calculateDistance,
         isOpen: _isOpen,
         nextOpenHours: _nextOpenHours,
         userLat: _currentPosition?.latitude ?? 0.0,
         userLng: _currentPosition?.longitude ?? 0.0,
+        hasSearched: hasSearched,
       ),
     );
   }
@@ -247,11 +251,13 @@ class MapViewBody extends StatelessWidget {
   final VoidCallback searchAndDisplay;
   final Function(String, String) updateType;
   final List places;
+  final String selectedType;
   final String Function(double, double, double, double) calculateDistance;
   final bool Function(Map?) isOpen;
   final String Function(Map?) nextOpenHours;
   final double userLat;
   final double userLng;
+  final bool hasSearched;
 
   const MapViewBody({
     super.key,
@@ -259,11 +265,13 @@ class MapViewBody extends StatelessWidget {
     required this.searchAndDisplay,
     required this.updateType,
     required this.places,
+    required this.selectedType,
     required this.calculateDistance,
     required this.isOpen,
     required this.nextOpenHours,
     required this.userLat,
     required this.userLng,
+    required this.hasSearched,
   });
 
   @override
@@ -289,25 +297,33 @@ class MapViewBody extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: ListView.builder(
-              itemCount: places.length,
-              itemBuilder: (context, index) {
-                var place = places[index];
-                return MapViewCard(
-                  title: place['name'] ?? 'Unknown',
-                  rating: place['rating']?.toDouble() ?? 0.0,
-                  totalReviews: place['user_ratings_total'] ?? 0,
-                  distance: calculateDistance(
-                      place['geometry']['location']['lat'],
-                      place['geometry']['location']['lng'],
-                      userLat,
-                      userLng),
-                  description: place['vicinity'] ?? 'No address available',
-                  isOpen: isOpen(place['opening_hours']),
-                  nextOpenHours: nextOpenHours(place['opening_hours']),
-                );
-              },
-            ),
+            child: hasSearched && places.isEmpty
+                ? const Center(
+                    child: Text(
+                      'No locations found for the address.',
+                      style: TTtextStyles.bodymediumRegular,
+                    ),
+                  )
+                : ListView.builder(
+                    itemCount: places.length,
+                    itemBuilder: (context, index) {
+                      var place = places[index];
+                      return MapViewCard(
+                        title: place['name'] ?? 'Unknown',
+                        rating: place['rating']?.toDouble() ?? 0.0,
+                        totalReviews: place['user_ratings_total'] ?? 0,
+                        distance: calculateDistance(
+                          place['geometry']['location']['lat'],
+                          place['geometry']['location']['lng'],
+                          userLat,
+                          userLng,
+                        ),
+                        description: place['vicinity'] ?? 'No address available',
+                        isOpen: isOpen(place['opening_hours']),
+                        nextOpenHours: nextOpenHours(place['opening_hours']),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
