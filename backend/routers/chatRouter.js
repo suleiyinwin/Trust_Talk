@@ -6,6 +6,7 @@ import chatlist from '../controllers/chat/chatlist.js';
 import getMessages from '../controllers/chat/getMessages.js';
 import userinfo from '../controllers/chat/getUserInfo.js';
 import {markRead} from '../controllers/chat/markRead.js';
+import deleteChat from '../controllers/chat/deleteChat.js';
 
 const chatRouter = Router();
 chatRouter.get('/expertlist',expertlist);
@@ -15,5 +16,6 @@ chatRouter.get('/chatlist', chatlist);
 chatRouter.get('/messages/:chatId', getMessages);
 chatRouter.get('/userinfo/:id', userinfo);
 chatRouter.post('/markread/:messageId', markRead);
+chatRouter.delete('/deletechat/:chatId', deleteChat);
 
 export default chatRouter;

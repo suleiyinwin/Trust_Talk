@@ -65,7 +65,7 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _profileImageBytes = bytes;
       });
-            print("Selected profile photo loaded: ${pickedFile.path}");
+          
 
     }
   }
@@ -248,8 +248,8 @@ class ProfileImage extends StatelessWidget {
                           return Image.asset(
                             'images/default_profile.png',
                             fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
+                            width: 200,
+                            height: 200,
                           );
                         },
                       )

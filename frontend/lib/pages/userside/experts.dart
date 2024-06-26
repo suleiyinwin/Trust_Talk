@@ -14,19 +14,19 @@ class ExpertsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          shape: const Border(
-            bottom: BorderSide(color: AppColors.backgroundGrey, width: 1.0)),
-          backgroundColor: AppColors.backgroundColor,
-          title: const Text('Health Experts', style: TTtextStyles.subtitleBold),
-        ),
+      appBar: AppBar(
+        shape: const Border(
+          bottom: BorderSide(color: AppColors.backgroundGrey, width: 1.0)),
         backgroundColor: AppColors.backgroundColor,
-        body: const AllExperts(),
+        title: const Text('Health Experts', style: TTtextStyles.subtitleBold),
+      ),
+      backgroundColor: AppColors.backgroundColor,
+      body: const AllExperts(),
     );
   }
 }
 
-//Expert class
+// Expert class
 class Expert {
   final String expertId;
   final String name;
@@ -52,7 +52,8 @@ class Expert {
     );
   }
 }
-//List of all experts
+
+// List of all experts
 class AllExperts extends StatefulWidget {
   const AllExperts({super.key});
 
@@ -95,7 +96,6 @@ class _AllExpertsState extends State<AllExperts> {
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         final chat = json.decode(response.body);
-        // print(chat);
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -111,34 +111,48 @@ class _AllExpertsState extends State<AllExperts> {
       // Redirect to login
     }
   }
-  
+
+  Future<void> _refreshExperts() async {
+    setState(() {
+      _expertsFuture = fetchExperts();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder<List<Expert>>(
-        future: _expertsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No experts found'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ExpertsCard(
-                  name: snapshot.data![index].name,
-                  specialty: snapshot.data![index].specialty,
-                  profileUrl: snapshot.data![index].profileUrl,
-                  isActive: snapshot.data![index].isActive,
-                  onPressed: () => _createChat(snapshot.data![index].expertId),
-                );
-              },
-            );
-          }
-        },
+      body: RefreshIndicator(
+        onRefresh: _refreshExperts,
+        child: FutureBuilder<List<Expert>>(
+          future: _expertsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No experts found'));
+            } else {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ExpertsCard(
+                      name: snapshot.data![index].name,
+                      specialty: snapshot.data![index].specialty,
+                      profileUrl: snapshot.data![index].profileUrl,
+                      isActive: snapshot.data![index].isActive,
+                      onPressed: () => _createChat(snapshot.data![index].expertId),
+                    );
+                  },
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

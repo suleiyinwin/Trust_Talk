@@ -180,10 +180,6 @@ class _ExpertProfileState extends State<ExpertProfile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.backgroundColor,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.pop(context),
-        )
       ),
       backgroundColor: AppColors.backgroundColor,
       body: Center(

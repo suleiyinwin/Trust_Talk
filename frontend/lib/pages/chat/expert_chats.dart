@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:frontend/date_time_utils.dart';
+import 'package:frontend/pages/chat/chat_notifier.dart';
 import 'package:frontend/pages/chat/expert_chatroom.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -28,6 +29,9 @@ class _ChatsPageState extends State<ChatsPage> {
   void initState() {
     super.initState();
     _chatsFuture = fetchChats();
+    ChatUpdateNotifier.stream.listen((_) {
+      _fetchUpdatedChats();
+    });
   }
   
   Future<void> _fetchUpdatedChats() async {
@@ -90,6 +94,10 @@ class _ChatsPageState extends State<ChatsPage> {
     }
   }
 
+  Future<void> _refreshChats() async {
+    await _fetchUpdatedChats();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,28 +106,40 @@ class _ChatsPageState extends State<ChatsPage> {
         title: const Text('Chats', style: TTtextStyles.subtitleBold),
       ),
       backgroundColor: AppColors.backgroundColor,
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _chatsFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('No chats found'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ChatCard(
-                  chat: snapshot.data![index],
-                  userInfo: chatsWithInfo[index],
-                  onChatTap: _fetchUpdatedChats, // Pass the refresh function to the ChatCard
-                );
-              },
-            );
-          }
-        },
+      body: RefreshIndicator(
+        onRefresh: _refreshChats,
+        child: FutureBuilder<List<Map<String, dynamic>>>(
+          future: _chatsFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(child: Text('No chats found'));
+            } else {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ChatCard(
+                      chat: snapshot.data![index],
+                      userInfo: chatsWithInfo[index],
+                      onChatTap: () {
+                        setState(() {
+                          _chatsFuture = fetchChats();
+                        });
+                      },
+                    );
+                  },
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -142,41 +162,47 @@ class ChatCard extends StatelessWidget {
     final isSender = chat['lastMessage']?['sender'] == chat['members'][1];
 
     return InkWell(
-      onTap: () async { await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => IndiExpertChat(chat: chat))
+      onTap: () async { 
+        await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => IndiExpertChat(chat: chat))
         );
         onChatTap();
       },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
-          leading: CircleAvatar(
-            radius: 30,
-            child: ClipOval(
-              child: userInfo['profileurl'].isNotEmpty
-                ? Image.network(
-                    userInfo['profileurl'],
-                    fit: BoxFit.cover,
-                    width: 60.0,
-                    height: 60.0,
-                    errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
-                      return Image.asset(
-                        'images/default_profile.png',
-                        fit: BoxFit.cover,
-                        width: 60.0,
-                        height: 60.0,
-                      );
-                    },
-                  )
-                : Image.asset(
-                    'images/default_profile.png',
-                    fit: BoxFit.cover,
-                    width: 60.0,
-                    height: 60.0,
-                  ),
+          leading: Container(
+            width: 50,
+            height: 50,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+            ),
+            child: CircleAvatar(
+              child: ClipOval(
+                child: userInfo['profileurl'].isNotEmpty
+                  ? Image.network(
+                      userInfo['profileurl'],
+                      fit: BoxFit.cover,
+                      width: 50.0,
+                      height: 50.0,
+                      errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                        return Image.asset(
+                          'images/default_profile.png',
+                          fit: BoxFit.cover,
+                          width: 50.0,
+                          height: 50.0,
+                        );
+                      },
+                    )
+                  : Image.asset(
+                      'images/default_profile.png',
+                      fit: BoxFit.cover,
+                      width: 60.0,
+                      height: 60.0,
+                    ),
+              ),
             ),
           ),
-
           title: Text(userInfo['username'] ?? 'User', style: TTtextStyles.bodylargeBold),
           subtitle: Text(
             chat['lastMessage']?['content'] ?? '',

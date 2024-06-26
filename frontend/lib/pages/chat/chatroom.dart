@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:frontend/date_time_utils.dart';
+import 'package:frontend/pages/chat/chat_notifier.dart';
 import 'package:frontend/pages/chat/other_msg.dart';
 import 'package:frontend/pages/chat/own_msg.dart';
 import 'package:frontend/components/textstyles.dart';
@@ -40,6 +41,7 @@ class _IndiChatState extends State<IndiChat> {
     setState(() {
       messages.add(message);
     });
+    ChatUpdateNotifier.notify();
   }
 
   void sendMessage() {
@@ -62,6 +64,7 @@ class _IndiChatState extends State<IndiChat> {
       //   messages.add(message);
       // });
       _messageController.clear();
+      ChatUpdateNotifier.notify();
     }
   }
 
@@ -221,7 +224,7 @@ class _IndiChatState extends State<IndiChat> {
                   Expanded(
                     // width: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
-                      margin: const EdgeInsets.only(left: 5, right: 2, bottom: 8),
+                      margin: const EdgeInsets.only(left: 5, right: 2, bottom: 30),
                       color: AppColors.backgroundGrey,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
@@ -244,7 +247,7 @@ class _IndiChatState extends State<IndiChat> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(bottom: 30.0),
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.1,
                       child: IconButton(
