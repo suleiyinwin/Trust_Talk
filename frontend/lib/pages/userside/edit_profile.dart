@@ -19,8 +19,10 @@ class _EditProfileState extends State<EditProfile> {
   Uint8List? _profileImageBytes;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  final userNameRegx = RegExp(r'^[a-zA-Z0-9_-]+$');
   String _profilePhotoUrl = '';
   String _usernameError = '';
+  final _formKey = GlobalKey<FormState>();
   final String? backendUrl = dotenv.env['BACKEND_URL'];
 
   @override
@@ -65,8 +67,6 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         _profileImageBytes = bytes;
       });
-          
-
     }
   }
 
@@ -90,7 +90,6 @@ class _EditProfileState extends State<EditProfile> {
           _profileImageBytes!,
           filename: 'profile.jpg',
         ));
-
       }
 
       final response = await request.send();
@@ -103,8 +102,8 @@ class _EditProfileState extends State<EditProfile> {
           final newProfilePhotoUrl = responseData['user']['profileurl'];
           await prefs.setString('profilePhotoUrl', newProfilePhotoUrl);
         }
-        if(mounted){
-        Navigator.pop(context, 'updated');
+        if (mounted) {
+          Navigator.pop(context, 'updated');
         }
       } else {
         final responseData = jsonDecode(responseBody);
@@ -131,29 +130,42 @@ class _EditProfileState extends State<EditProfile> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    ProfileImage(
-                      profileImageBytes: _profileImageBytes,
-                      profilePhotoUrl: _profilePhotoUrl,
-                      onSelectProfilePhoto: _selectAndUploadProfilePhoto,
-                    ),
-                    const SizedBox(height: 20),
-                    // Username
-                    TextFieldWithTitle(
-                      title: 'Username',
-                      controller: _usernameController,
-                      errorText: _usernameError,
-                    ),
-                    // Email
-                    TextFieldWithTitle(
-                      title: 'Email',
-                      controller: _emailController,
-                      enabled: false,
-                    ),
-                  ],
+              child: Form(
+                key: _formKey,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    children: [
+                      ProfileImage(
+                        profileImageBytes: _profileImageBytes,
+                        profilePhotoUrl: _profilePhotoUrl,
+                        onSelectProfilePhoto: _selectAndUploadProfilePhoto,
+                      ),
+                      const SizedBox(height: 20),
+                      // Username
+                      TextFieldWithTitle(
+                        title: 'Username',
+                        controller: _usernameController,
+                        errorText: _usernameError,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a username';
+                          } else if (!userNameRegx.hasMatch(value)) {
+                            return 'Username must contain only letters, numbers, \nunderscores, or hyphens.';
+                          } else if (_usernameError.isNotEmpty) {
+                            return _usernameError;
+                          }
+                          return null;
+                        },
+                      ),
+                      // Email
+                      TextFieldWithTitle(
+                        title: 'Email',
+                        controller: _emailController,
+                        enabled: false,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -164,7 +176,11 @@ class _EditProfileState extends State<EditProfile> {
               width: 280,
               height: 50,
               child: OutlinedButton(
-                onPressed: _updateProfile,
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _updateProfile();
+                  }
+                },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: AppColors.primaryColor,
                   shape: RoundedRectangleBorder(
@@ -294,14 +310,16 @@ class TextFieldWithTitle extends StatelessWidget {
   final TextEditingController controller;
   final bool enabled;
   final String errorText;
+  final FormFieldValidator<String>? validator;
 
   const TextFieldWithTitle({
     required this.title,
     required this.controller,
     this.enabled = true,
     this.errorText = '',
+    this.validator,
     super.key,
-  }) ;
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -318,9 +336,10 @@ class TextFieldWithTitle extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 5),
-          TextField(
+          TextFormField(
             controller: controller,
             enabled: enabled,
+            validator: validator,
             decoration: InputDecoration(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 13.0, horizontal: 10.0),
@@ -331,7 +350,7 @@ class TextFieldWithTitle extends StatelessWidget {
               fillColor: AppColors.backgroundGrey,
               filled: true,
               errorText: errorText.isEmpty ? null : errorText,
-             errorBorder: OutlineInputBorder(
+              errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10.0),
                 borderSide: const BorderSide(color: Colors.red),
               ),
@@ -346,4 +365,3 @@ class TextFieldWithTitle extends StatelessWidget {
     );
   }
 }
-
