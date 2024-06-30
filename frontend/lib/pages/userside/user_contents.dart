@@ -25,7 +25,9 @@ class _UserContentsState extends State<UserContents> {
   }
   Future<void> _refresh() async {
     print('refreshed');
-    setState(() {});
+    setState(() {
+      _getContents();
+    });
   }
   Future<void> _getContents() async {
     try {
