@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/login.dart';
+import 'package:frontend/pages/authentication/usertype.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -15,6 +17,7 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final _formKey = GlobalKey<FormState>();
   String errorMessage = '';
+  String backendErrorMessage = '';  
   final _usernameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -52,19 +55,21 @@ class _SignupState extends State<Signup> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => const Login()),
+            (Route<dynamic> route) => false,
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessage = 'Failed to signup: ${response.body}';
+         backendErrorMessage = responseBody['message'] ?? 'Failed to signup';
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to signup: ${e.toString()}';
+        backendErrorMessage = 'Failed to signup: ${e.toString()}';
       });
     }
   }
@@ -73,9 +78,21 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+       appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                ),
+                onPressed: () => Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) => const UserType()), (route) => false),
+
+                
+              )
+      ),
       body: SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 170, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20,  60, 20, 20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -93,17 +110,16 @@ class _SignupState extends State<Signup> {
                 ),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+              SizedBox(
                 child: Text(
                   'Join Us',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
               ),
               const SizedBox(height: 10.0),
+              
 
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -120,7 +136,9 @@ class _SignupState extends State<Signup> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Username',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -155,7 +173,9 @@ class _SignupState extends State<Signup> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -182,14 +202,16 @@ class _SignupState extends State<Signup> {
                     if (value == null || value.isEmpty) {
                       return 'Please Enter a password';
                     } else if (!passwordRegex.hasMatch(value)) {
-                      return 'Password must contain at least 6 characters, one uppercase letter, one lowercase letter, one number and one special character';
+                      return 'Password must contain \n at least 6 characters, \n one uppercase letter, \n one lowercase letter, \n one number and one special character';
                     }
                     return null;
                   },
                   obscureText: passwordVisibleOne,
                   decoration: InputDecoration(
                     labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -236,7 +258,9 @@ class _SignupState extends State<Signup> {
                   obscureText: passwordVisibleTwo,
                   decoration: InputDecoration(
                     labelText: '   Confirm Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -268,7 +292,18 @@ class _SignupState extends State<Signup> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+               if (backendErrorMessage.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    backendErrorMessage,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
@@ -286,41 +321,37 @@ class _SignupState extends State<Signup> {
                         signUp();
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       'Register',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
+                      style: TTtextStyles.subheadlineBold.copyWith(
+                        color: AppColors.white,
                       ),
                     ),
                   ),
                 ),
               ),
-              // Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Already have an account?',
-                    style: TextStyle(
-                      color: AppColors.textColor,
-                    ),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        MaterialPageRoute(builder: (context) => Login()),
+                        MaterialPageRoute(builder: (context) => const Login()),
+                        (Route<dynamic> route) => false,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Login',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
+                      style: TTtextStyles.bodymediumBold.copyWith(
                         color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.primaryColor,
                       ),
                     ),
                   ),

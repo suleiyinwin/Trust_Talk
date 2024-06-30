@@ -12,26 +12,27 @@ const login = async (req, res) => {
 
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).json({ error: 'User not found' });
-        }
-        if(user.type !== 'user') {
-            return res.status(400).json({ error: 'User not authorized' });
+            return res.status(400).json({ message: 'Email does not exist' });
         }
 
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        // console.log('User logged in:', userCredential.user);
-        const idToken = await userCredential.user.getIdToken();
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const idToken = await userCredential.user.getIdToken();
 
-        // Verify the ID token using Firebase Admin SDK
-        const decodedToken = await admin.auth().verifyIdToken(idToken);
-        if (decodedToken) {
-            res.status(200).json({ token: idToken });
-        } else {
-            res.status(401).json({ error: 'Invalid credentials' });
+            // Verify the ID token using Firebase Admin SDK
+            const decodedToken = await admin.auth().verifyIdToken(idToken);
+            if (decodedToken) {
+                res.status(200).json({ token: idToken, userId: user.userId });
+            } else {
+                console.error('Failed to verify ID token');
+                res.status(401).json({ message: 'Invalid Email' });
+            }
+        } catch (firebaseError) {
+            res.status(401).json({ message: 'Incorrect password' });
         }
     } catch (error) {
         console.error('Error logging in user:', error.message);
-        res.status(500).json({ error: 'Failed to log in user' });
+        res.status(500).json({ message: 'Failed to log in user' });
     }
 };
 

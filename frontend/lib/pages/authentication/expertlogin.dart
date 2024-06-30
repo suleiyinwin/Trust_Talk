@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/pages/expertSide/expertHome.dart';
+import 'package:frontend/components/expert_nav.dart';
+import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/authentication/usertype.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExpertLogin extends StatefulWidget {
-  ExpertLogin({super.key});
+  const ExpertLogin({super.key});
 
   @override
   State<ExpertLogin> createState() => _ExpertLoginState();
@@ -27,6 +29,7 @@ class _ExpertLoginState extends State<ExpertLogin> {
     super.initState();
     passwordVisibleOne = true;
   }
+
   final String? backendUrl = dotenv.env['BACKEND_URL'];
   void login() async {
     try {
@@ -42,29 +45,31 @@ class _ExpertLoginState extends State<ExpertLogin> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final String token = responseBody['token'];
+        final String expertId = responseBody['expertId'];
 
         // Store the token using shared_preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+        await prefs.setString('expertId', expertId);
 
         // Navigate to the home page or another page
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const ExpertHome()),
+            MaterialPageRoute(builder: (context) => const ExpertNav()),
+            (route) => false,
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessageforapi = 'Failed to log in: ${response.body}';
-          print(errorMessageforapi);
+           errorMessageforapi =responseBody['message'] ?? 'Failed to login';
         });
       }
     } catch (e) {
-      setState(() {
+     setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-          print(errorMessageforapi);
       });
     }
   }
@@ -73,9 +78,21 @@ class _ExpertLoginState extends State<ExpertLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        leading: IconButton(
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                ),
+                onPressed: () => Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (context) => const UserType()), (route) => false),
+
+                
+              )
+      ),
       body: SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 170, 20, 20),
+        padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
         child: Form(
           key: _formKey,
           child: Column(
@@ -93,12 +110,10 @@ class _ExpertLoginState extends State<ExpertLogin> {
                 ),
               ),
               const SizedBox(height: 20),
-              const SizedBox(
+              SizedBox(
                 child: Text(
                   'Welcome!',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  style: TTtextStyles.title1Bold.copyWith(
                     color: AppColors.textColor,
                   ),
                 ),
@@ -118,7 +133,9 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   },
                   decoration: InputDecoration(
                     labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -150,7 +167,9 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   obscureText: passwordVisibleOne,
                   decoration: InputDecoration(
                     labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                    labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                      color: AppColors.disableColor,
+                    ),
 
                     fillColor: AppColors.backgroundGrey,
                     filled: true,
@@ -182,7 +201,18 @@ class _ExpertLoginState extends State<ExpertLogin> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
+              if (errorMessageforapi.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessageforapi,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
@@ -200,19 +230,15 @@ class _ExpertLoginState extends State<ExpertLogin> {
                         login();
                       }
                     },
-                    child: const Text(
+                    child: Text(
                       'Login',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
+                      style: TTtextStyles.subheadlineBold.copyWith(
+                        color: AppColors.white,
                       ),
                     ),
                   ),
                 ),
               ),
-              
             ],
           ),
         ),

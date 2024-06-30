@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
 import 'package:frontend/pages/authentication/usertype.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -12,20 +13,21 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      backgroundColor: AppColors.primaryColor, 
+    return Scaffold(
+      backgroundColor: AppColors.primaryColor,
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image.asset('images/logo.png',
-              errorBuilder: (context,error,stackTrace){
-                return const Text('Error loading splash  image');
-              },), 
-          
+              Image.asset(
+                'images/logo.png',
+                errorBuilder: (context, error, stackTrace) {
+                  return const Text('Error loading splash  image');
+                },
+              ),
               const SizedBox(height: 200),
-               SizedBox(
+              SizedBox(
                 width: 300,
                 height: 50,
                 child: ElevatedButton(
@@ -36,13 +38,15 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                   onPressed: () {
-                     Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => const UserType()),
-              (Route<dynamic> route) => false,
-            );
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => const UserType()),
+                      (Route<dynamic> route) => false,
+                    );
                   },
-                  child:const Text('Get Started',style: TextStyle(color: AppColors.primaryColor, fontWeight: FontWeight.bold, fontSize: 18, wordSpacing: 2),),
+                  child: Text('Get Started',
+                      style: TTtextStyles.bodylargeBold
+                          .copyWith(color: AppColors.primaryColor)),
                 ),
               ),
             ],

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/components/bottomNavigation.dart';
 import 'package:frontend/components/colors.dart';
+import 'package:frontend/components/textstyles.dart';
+import 'package:frontend/pages/authentication/forgot_pwd.dart';
 import 'package:frontend/pages/authentication/signup.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:frontend/pages/userside/home.dart';
+import 'package:frontend/pages/authentication/usertype.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,29 +47,31 @@ class _LoginState extends State<Login> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         final String token = responseBody['token'];
+        final String userId = responseBody['userId'];
 
         // Store the token using shared_preferences
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+        await prefs.setString('userId', userId);
 
         // Navigate to the home page or another page
         if (mounted) {
           // Check if the widget is still mounted
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => const Home()),
+            MaterialPageRoute(builder: (context) => const BottomNav()),
+            (route) => false,
           );
         }
       } else {
+        final responseBody = jsonDecode(response.body);
         setState(() {
-          errorMessageforapi = 'Failed to log in: ${response.body}';
-          print(errorMessageforapi);
+          errorMessageforapi =responseBody['message'] ?? 'Failed to login';
         });
       }
     } catch (e) {
       setState(() {
         errorMessageforapi = 'Failed to login ${e.toString()}';
-          print(errorMessageforapi);
       });
     }
   }
@@ -75,177 +80,257 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      body: SingleChildScrollView(
-          child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 170, 20, 20),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: 90,
-                height: 90,
-                child: Image.asset(
-                  'images/logo.png',
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Text('Error loading splash  image');
-                  },
-                ),
-              ),
-              const SizedBox(height: 20),
-              const SizedBox(
-                child: Text(
-                  'Welcome!',
-                  style: TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textColor,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter an email address';
-                    } else if (errorMessage.isNotEmpty) {
-                      return errorMessage;
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    labelText: '   Email',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+      appBar: AppBar(
+          backgroundColor: AppColors.backgroundColor,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back_ios,
+            ),
+            onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const UserType()),
+                (route) => false),
+          )),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(20, 120, 20, 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 90,
+                        height: 90,
+                        child: Image.asset(
+                          'images/logo.png',
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Text('Error loading splash  image');
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      SizedBox(
+                        child: Text(
+                          'Welcome!',
+                          style: TTtextStyles.title1Bold.copyWith(
+                            color: AppColors.textColor,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextFormField(
+                          controller: _emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter an email address';
+                            } else if (errorMessage.isNotEmpty) {
+                              return errorMessage;
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                            labelText: '   Email',
+                            labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                              color: AppColors.disableColor,
+                            ),
 
-                    fillColor: AppColors.backgroundGrey,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          color: Colors
-                              .red), // Custom border color for validation error
-                    ),
-                    floatingLabelBehavior:
-                        FloatingLabelBehavior.never, // Hide label when focused
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  controller: _passwordController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please Enter a password';
-                    }
-                    return null;
-                  },
-                  obscureText: passwordVisibleOne,
-                  decoration: InputDecoration(
-                    labelText: '   Password',
-                    labelStyle: const TextStyle(color: AppColors.disableColor),
+                            fillColor: AppColors.backgroundGrey,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  color: Colors
+                                      .red), // Custom border color for validation error
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, // Hide label when focused
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+                        child: TextFormField(
+                          controller: _passwordController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please Enter a password';
+                            }
+                            return null;
+                          },
+                          obscureText: passwordVisibleOne,
+                          decoration: InputDecoration(
+                            labelText: '   Password',
+                            labelStyle: TTtextStyles.bodymediumBold.copyWith(
+                              color: AppColors.disableColor,
+                            ),
 
-                    fillColor: AppColors.backgroundGrey,
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          color: Colors
-                              .red), // Custom border color for validation error
-                    ),
-                    floatingLabelBehavior:
-                        FloatingLabelBehavior.never, // Hide label when focused
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        passwordVisibleOne
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: AppColors.disableColor,
+                            fillColor: AppColors.backgroundGrey,
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: const BorderSide(
+                                  color: Colors
+                                      .red), // Custom border color for validation error
+                            ),
+                            floatingLabelBehavior: FloatingLabelBehavior
+                                .never, // Hide label when focused
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                passwordVisibleOne
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: AppColors.disableColor,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  passwordVisibleOne = !passwordVisibleOne;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          passwordVisibleOne = !passwordVisibleOne;
-                        });
-                      },
+                      if (errorMessageforapi.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    errorMessageforapi,
+                    style: TTtextStyles.bodymediumBold.copyWith(
+                      color: Colors.red,
                     ),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+                      const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 3.0, right: 5.0),
+                          child: ForgotPwd(),
+                          ),
+                      ),
+                      const SizedBox(height: 5),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                login();
+                              }
+                            },
+                            child: Text(
+                              'Login',
+                              style: TTtextStyles.subheadlineBold.copyWith(
+                                color: AppColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        login();
-                      }
-                    },
-                    child: const Text(
-                      'Login',
-                      style: TextStyle(
-                        color: AppColors.backgroundColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        wordSpacing: 2,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              // Spacer(),
-              Row(
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 40.0),
+            child: SizedBox(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     'Don\'t you have an account?',
-                    style: TextStyle(
-                      color: AppColors.textColor,
-                    ),
+                    style: TTtextStyles.bodymediumBold
+                        .copyWith(color: AppColors.textColor),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => const Signup()),
+                        (route) => false,
                       );
                     },
-                    child: const Text(
+                    child: Text(
                       'Register now',
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
+                      style: TTtextStyles.bodymediumBold.copyWith(
                         color: AppColors.primaryColor,
-                        fontWeight: FontWeight.bold,
+                        decoration: TextDecoration.underline,
+                        decorationColor: AppColors.primaryColor,
                       ),
                     ),
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      )),
+        ],
+      ),
     );
+  }
+}
+class ForgotPwd extends StatelessWidget {
+  const ForgotPwd({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      child: Text(
+        'Forgot Password?',
+        style: TTtextStyles.bodysmallRegular.copyWith(
+          fontSize: 13,
+          color: Colors.black
+        ),
+      ),
+       onPressed: (){
+          showDialog(
+            context: context, 
+            builder: (BuildContext context){
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: AppColors.backgroundColor,
+                content: const SizedBox(
+                  width: 600,
+                  height: 300,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [ForgotPwdModal()],
+                    ),
+                  ),
+                ),
+              );
+            }
+            );
+        } 
+      );
   }
 }
