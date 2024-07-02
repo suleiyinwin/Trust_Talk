@@ -1,7 +1,5 @@
 import Chat from "../../dbModels/chat.js";
-import firebaseClientConfig from '../../database/firebaseClientConfig.js';
 import admin from 'firebase-admin';
-import { bucket } from '../../database/firebaseConfig.js';
 
 const chatlist = async (req, res) => {
     try {

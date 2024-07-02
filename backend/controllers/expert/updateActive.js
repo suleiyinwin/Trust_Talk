@@ -1,8 +1,6 @@
 import admin from 'firebase-admin';
 import Expert from '../../dbModels/expert.js';
-import { bucket } from '../../database/firebaseConfig.js';
 import dotenv from 'dotenv';
-import firebaseClientConfig from '../../database/firebaseClientConfig.js';
 
 dotenv.config();
 

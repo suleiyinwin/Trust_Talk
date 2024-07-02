@@ -1,6 +1,5 @@
 import Chat from "../../dbModels/chat.js";
 import admin from 'firebase-admin';
-import firebaseClientConfig from '../../database/firebaseClientConfig.js';
 import dotenv from 'dotenv';
 import { v4 as uuidv4 } from 'uuid';
 
