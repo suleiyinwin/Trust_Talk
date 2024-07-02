@@ -1,7 +1,6 @@
 import Chat from "../../dbModels/chat.js";
 import Message from "../../dbModels/message.js";
 import admin from 'firebase-admin';
-import firebaseClientConfig from '../../database/firebaseClientConfig.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

@@ -180,7 +180,7 @@ class _MapViewState extends State<MapView> {
 
   String _nextOpenHours(Map? openingHours) {
     if (openingHours == null) return 'No hours available';
-    if (openingHours['open_now'] == true) return 'Open 24 hours';
+    if (openingHours['open_now'] == true) return 'Open';
 
     DateTime now = DateTime.now();
     int day = now.weekday % 7;
